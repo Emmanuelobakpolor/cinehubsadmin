@@ -1,0 +1,235 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import { API_BASE, getAccessToken } from "@/lib/auth";
+
+export const Route = createFileRoute("/_layout/subscribers")({
+  component: SubscribersPage,
+});
+
+interface Subscriber {
+  id: number;
+  username: string;
+  email: string;
+  plan_name: "BASIC" | "PREMIUM";
+  status: "ACTIVE" | "EXPIRED" | "CANCELLED";
+  is_active: boolean;
+  start_date: string;
+  end_date: string;
+}
+
+interface Counts {
+  total: number;
+  basic: number;
+  premium: number;
+  active: number;
+}
+
+type PlanFilter = "ALL" | "BASIC" | "PREMIUM";
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+const PAGE_SIZE = 15;
+
+function SubscribersPage() {
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [counts, setCounts] = useState<Counts>({ total: 0, basic: 0, premium: 0, active: 0 });
+  const [planFilter, setPlanFilter] = useState<PlanFilter>("ALL");
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (planFilter !== "ALL") params.set("plan", planFilter);
+
+    fetch(`${API_BASE}/subscriptions/subscribers/?${params}`, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setCounts(data.counts ?? { total: 0, basic: 0, premium: 0, active: 0 });
+        setSubscribers(Array.isArray(data.results) ? data.results : []);
+        setPage(0);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [planFilter]);
+
+  const paginated = subscribers.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(subscribers.length / PAGE_SIZE));
+
+  return (
+    <>
+      <div className="rounded-2xl bg-card px-6 py-5 shadow-sm">
+        <div className="text-base">
+          <span className="font-medium">Number of Subscribers:</span>{" "}
+          <span className="font-bold">{loading ? "—" : counts.total}</span>
+        </div>
+      </div>
+
+      <div className="mt-5 flex flex-wrap items-center gap-4">
+        <Pill
+          color="bg-sky-500"
+          label="All Subscribers"
+          value={String(counts.total)}
+          active={planFilter === "ALL"}
+          onClick={() => setPlanFilter("ALL")}
+        />
+        <Pill
+          color="bg-gold"
+          label="Basic"
+          value={String(counts.basic)}
+          active={planFilter === "BASIC"}
+          onClick={() => setPlanFilter("BASIC")}
+        />
+        <Pill
+          color="bg-rose-500"
+          label="Premium"
+          value={String(counts.premium)}
+          active={planFilter === "PREMIUM"}
+          onClick={() => setPlanFilter("PREMIUM")}
+        />
+        <button className="flex items-center gap-2 rounded-2xl bg-card px-5 py-4 text-sm font-medium shadow-sm">
+          <Filter className="h-4 w-4" /> Filters
+        </button>
+        <button
+          className="rounded-2xl border-2 border-fuchsia-400 px-6 py-3 text-sm font-semibold text-fuchsia-500"
+          onClick={() => setPlanFilter("ALL")}
+        >
+          Show all
+        </button>
+      </div>
+
+      <div className="mt-6 rounded-2xl bg-card shadow-sm">
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
+          <div>User</div>
+          <div>Type</div>
+          <div>Status</div>
+          <div>Start Date</div>
+          <div>Expires</div>
+        </div>
+
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-3 last:border-0 animate-pulse">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-muted" />
+                <div className="space-y-1">
+                  <div className="h-3 w-28 rounded bg-muted" />
+                  <div className="h-2.5 w-36 rounded bg-muted" />
+                </div>
+              </div>
+              <div className="h-6 w-16 rounded-full bg-muted" />
+              <div className="h-6 w-16 rounded-full bg-muted" />
+              <div className="h-3 w-20 rounded bg-muted" />
+              <div className="h-3 w-20 rounded bg-muted" />
+            </div>
+          ))
+        ) : paginated.length === 0 ? (
+          <div className="px-6 py-10 text-center text-sm text-muted-foreground">No subscribers found.</div>
+        ) : (
+          paginated.map((r) => (
+            <div
+              key={r.id}
+              className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-3 last:border-0"
+            >
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-full bg-muted font-semibold text-sm uppercase">
+                  {r.username.slice(0, 2)}
+                </div>
+                <div>
+                  <div className="font-medium">{r.username}</div>
+                  <div className="text-sm text-muted-foreground">{r.email}</div>
+                </div>
+              </div>
+              <div>
+                <span
+                  className={`inline-block rounded-full px-4 py-1 text-xs font-semibold ${
+                    r.plan_name === "BASIC"
+                      ? "bg-basic-soft text-basic"
+                      : "bg-premium-soft text-premium"
+                  }`}
+                >
+                  {r.plan_name}
+                </span>
+              </div>
+              <div>
+                {r.is_active ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-600">
+                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />{" "}
+                    {r.status.charAt(0) + r.status.slice(1).toLowerCase()}
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">{formatDate(r.start_date)}</div>
+              <div className="text-sm text-muted-foreground">{formatDate(r.end_date)}</div>
+            </div>
+          ))
+        )}
+
+        <div className="flex items-center gap-4 px-6 py-4">
+          <button
+            className="rounded-lg border border-border px-4 py-2 text-sm disabled:opacity-40"
+            disabled={page === 0}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            Previous
+          </button>
+          <button
+            className="rounded-lg border border-border px-4 py-2 text-sm disabled:opacity-40"
+            disabled={page >= totalPages - 1}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </button>
+          <span className="ml-2 text-sm text-muted-foreground">
+            Showing {subscribers.length === 0 ? 0 : page * PAGE_SIZE + 1}–
+            {Math.min((page + 1) * PAGE_SIZE, subscribers.length)} of {subscribers.length}
+          </span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Pill({
+  color,
+  label,
+  value,
+  active,
+  onClick,
+}: {
+  color: string;
+  label: string;
+  value: string;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-1 min-w-[200px] items-center gap-3 rounded-2xl px-5 py-4 shadow-sm transition-colors ${
+        active ? "bg-primary/10 ring-2 ring-primary" : "bg-card"
+      }`}
+    >
+      <span
+        className={`grid h-6 w-6 place-items-center rounded-full border-2 ${color.replace("bg-", "border-")}`}
+      >
+        <span className={`h-3 w-3 rounded-full ${color}`} />
+      </span>
+      <span className="flex-1 font-semibold text-left">{label}</span>
+      <span className="font-bold">{value}</span>
+    </button>
+  );
+}
