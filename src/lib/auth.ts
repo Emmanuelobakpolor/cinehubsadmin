@@ -1,4 +1,4 @@
-export const API_BASE = "http://localhost:8000/api";
+export const API_BASE = "https://web-production-a39f0a.up.railway.app/api";
 
 const KEYS = {
   accessToken: "ch_access_token",

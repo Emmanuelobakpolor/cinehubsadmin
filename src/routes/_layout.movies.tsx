@@ -123,7 +123,7 @@ function MoviesPage() {
                 <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-500">
                   {m.thumbnail && (
                     <img
-                      src={m.thumbnail.startsWith("http") ? m.thumbnail : `http://localhost:8000${m.thumbnail}`}
+                      src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
                       alt={m.title}
                       className="h-full w-full object-cover"
                     />
