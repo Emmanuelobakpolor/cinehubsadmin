@@ -58,6 +58,7 @@ export function AddMovieModal({
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [trailerClipFile, setTrailerClipFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploadPct, setUploadPct] = useState<number | null>(null); // null=idle, 0-100=transferring, 101=processing
   const [error, setError] = useState("");
 
   // Pre-populate when in edit mode
@@ -142,24 +143,56 @@ export function AddMovieModal({
     const method = isEdit ? "PATCH" : "POST";
 
     setLoading(true);
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        body: fd,
+    setUploadPct(0);
+
+    await new Promise<void>((resolve) => {
+      const xhr = new XMLHttpRequest();
+
+      // Track the browser→server file transfer (phase 1)
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+          setUploadPct(Math.round((e.loaded / e.total) * 100));
+        }
       });
-      const data = await res.json();
-      if (!res.ok) {
-        const msg = Object.values(data).flat().join(" ") || "Something went wrong.";
-        setError(String(msg));
-        return;
-      }
-      onAdd(data as Movie);
-    } catch {
-      setError("Could not connect to the server.");
-    } finally {
-      setLoading(false);
-    }
+
+      // File fully received by Django — now it's uploading to Cloudinary (phase 2)
+      xhr.upload.addEventListener("loadend", () => setUploadPct(101));
+
+      xhr.addEventListener("load", () => {
+        setLoading(false);
+        setUploadPct(null);
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (xhr.status < 200 || xhr.status >= 300) {
+            const msg = Object.values(data).flat().join(" ") || "Something went wrong.";
+            setError(String(msg));
+          } else {
+            onAdd(data as Movie);
+          }
+        } catch {
+          setError("Unexpected response from server.");
+        }
+        resolve();
+      });
+
+      xhr.addEventListener("error", () => {
+        setLoading(false);
+        setUploadPct(null);
+        setError("Could not connect to the server.");
+        resolve();
+      });
+
+      xhr.addEventListener("abort", () => {
+        setLoading(false);
+        setUploadPct(null);
+        setError("Upload was cancelled.");
+        resolve();
+      });
+
+      xhr.open(method, url);
+      xhr.setRequestHeader("Authorization", `Bearer ${getAccessToken()}`);
+      xhr.send(fd);
+    });
   };
 
   if (!open) return null;
@@ -414,7 +447,11 @@ export function AddMovieModal({
             {loading ? (
               <>
                 <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                {isEdit ? "Saving…" : "Uploading…"}
+                {uploadPct === null || uploadPct === 0
+                  ? (isEdit ? "Saving…" : "Uploading…")
+                  : uploadPct <= 100
+                    ? `Uploading… ${uploadPct}%`
+                    : "Processing… saving to cloud storage"}
               </>
             ) : isEdit ? (
               <>
@@ -424,6 +461,30 @@ export function AddMovieModal({
               "Add Movie to Catalog"
             )}
           </button>
+
+          {/* Upload progress bar — visible during file transfer phase */}
+          {uploadPct !== null && uploadPct <= 100 && (
+            <div className="mt-3 space-y-1">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-gold transition-all duration-200"
+                  style={{ width: `${uploadPct}%` }}
+                />
+              </div>
+              <p className="text-center text-xs text-muted-foreground">
+                {uploadPct < 100
+                  ? `Sending to server… ${uploadPct}%`
+                  : "File received — processing with cloud storage…"}
+              </p>
+            </div>
+          )}
+
+          {/* Processing spinner — shown after 100% while Cloudinary works */}
+          {uploadPct === 101 && (
+            <p className="mt-3 text-center text-xs text-muted-foreground animate-pulse">
+              ☁️ Saving to cloud storage — this may take a few minutes for large files…
+            </p>
+          )}
         </div>
       </div>
     </div>,
