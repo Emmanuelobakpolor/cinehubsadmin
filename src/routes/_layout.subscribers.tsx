@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Filter } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Filter, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE, getAccessToken } from "@/lib/auth";
 
 export const Route = createFileRoute("/_layout/subscribers")({
@@ -26,6 +26,7 @@ interface Counts {
 }
 
 type PlanFilter = "ALL" | "BASIC" | "PREMIUM";
+type StatusFilter = "ALL" | "ACTIVE" | "EXPIRED" | "CANCELLED";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
@@ -41,13 +42,27 @@ function SubscribersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [counts, setCounts] = useState<Counts>({ total: 0, basic: 0, premium: 0, active: 0 });
   const [planFilter, setPlanFilter] = useState<PlanFilter>("ALL");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
+
+  // Close filter dropdown on outside click
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node))
+        setFilterOpen(false);
+    }
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (planFilter !== "ALL") params.set("plan", planFilter);
+    if (statusFilter !== "ALL") params.set("status", statusFilter);
 
     fetch(`${API_BASE}/subscriptions/subscribers/?${params}`, {
       headers: { Authorization: `Bearer ${getAccessToken()}` },
@@ -60,7 +75,7 @@ function SubscribersPage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [planFilter]);
+  }, [planFilter, statusFilter]);
 
   const paginated = subscribers.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   const totalPages = Math.max(1, Math.ceil(subscribers.length / PAGE_SIZE));
@@ -80,28 +95,60 @@ function SubscribersPage() {
           label="All Subscribers"
           value={String(counts.total)}
           active={planFilter === "ALL"}
-          onClick={() => setPlanFilter("ALL")}
+          onClick={() => { setPlanFilter("ALL"); setPage(0); }}
         />
         <Pill
           color="bg-gold"
           label="Basic"
           value={String(counts.basic)}
           active={planFilter === "BASIC"}
-          onClick={() => setPlanFilter("BASIC")}
+          onClick={() => { setPlanFilter("BASIC"); setPage(0); }}
         />
         <Pill
           color="bg-rose-500"
           label="Premium"
           value={String(counts.premium)}
           active={planFilter === "PREMIUM"}
-          onClick={() => setPlanFilter("PREMIUM")}
+          onClick={() => { setPlanFilter("PREMIUM"); setPage(0); }}
         />
-        <button className="flex items-center gap-2 rounded-2xl bg-card px-5 py-4 text-sm font-medium shadow-sm">
-          <Filter className="h-4 w-4" /> Filters
-        </button>
+        {/* Status filter dropdown */}
+        <div className="relative" ref={filterRef}>
+          <button
+            onClick={() => setFilterOpen((o) => !o)}
+            className={`flex items-center gap-2 rounded-2xl px-5 py-4 text-sm font-medium shadow-sm transition-colors ${
+              statusFilter !== "ALL"
+                ? "bg-primary/10 ring-2 ring-primary text-primary"
+                : "bg-card"
+            }`}
+          >
+            <Filter className="h-4 w-4" />
+            {statusFilter === "ALL" ? "Filters" : statusFilter.charAt(0) + statusFilter.slice(1).toLowerCase()}
+            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filterOpen ? "rotate-180" : ""}`} />
+          </button>
+          {filterOpen && (
+            <div className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[160px] rounded-xl border border-border bg-card py-1.5 shadow-lg">
+              {(["ALL", "ACTIVE", "EXPIRED", "CANCELLED"] as StatusFilter[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setStatusFilter(s); setFilterOpen(false); setPage(0); }}
+                  className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-muted ${
+                    statusFilter === s ? "font-semibold text-primary" : ""
+                  }`}
+                >
+                  {s === "ACTIVE" && <span className="h-2 w-2 rounded-full bg-green-500" />}
+                  {s === "EXPIRED" && <span className="h-2 w-2 rounded-full bg-rose-500" />}
+                  {s === "CANCELLED" && <span className="h-2 w-2 rounded-full bg-gray-400" />}
+                  {s === "ALL" && <span className="h-2 w-2 rounded-full bg-sky-400" />}
+                  {s === "ALL" ? "All statuses" : s.charAt(0) + s.slice(1).toLowerCase()}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <button
-          className="rounded-2xl border-2 border-fuchsia-400 px-6 py-3 text-sm font-semibold text-fuchsia-500"
-          onClick={() => setPlanFilter("ALL")}
+          className="rounded-2xl border-2 border-fuchsia-400 px-6 py-3 text-sm font-semibold text-fuchsia-500 transition-opacity hover:opacity-80"
+          onClick={() => { setPlanFilter("ALL"); setStatusFilter("ALL"); setPage(0); }}
         >
           Show all
         </button>
