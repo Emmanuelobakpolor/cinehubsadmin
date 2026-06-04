@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
-import { LayoutGrid, Package, Users, Radio, ChevronLeft, Film, LogOut } from "lucide-react";
+import { LayoutGrid, Package, Users, Radio, ChevronLeft, Film, LogOut, Tags } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { logoutAndRedirect } from "@/lib/auth";
 
@@ -14,6 +14,7 @@ const navGroups = [
     items: [
       { to: "/upload-movie", label: "Upload Movie", icon: Package },
       { to: "/movies", label: "Movies", icon: Film },
+      { to: "/categories", label: "Categories", icon: Tags },
     ],
   },
   {
