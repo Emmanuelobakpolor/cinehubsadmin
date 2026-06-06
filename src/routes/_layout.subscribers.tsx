@@ -215,7 +215,7 @@ function SubscribersPage() {
                 ) : (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />{" "}
-                    {r.status.charAt(0) + r.status.slice(1).toLowerCase()}
+                    {r.status === "CANCELLED" ? "Cancelled" : "Expired"}
                   </span>
                 )}
               </div>
