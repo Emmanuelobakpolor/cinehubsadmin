@@ -113,7 +113,7 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="mt-6 grid min-w-0 grid-cols-1 gap-6 xl:mt-8 2xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,1fr)]">
+      <div className="mt-6 grid min-w-0 grid-cols-1 gap-6 xl:mt-8 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,1fr)]">
         
         {/* Recent Movies */}
         <div className="min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
@@ -125,7 +125,7 @@ function Dashboard() {
           </div>
 
           {/* Desktop Table */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <div className="grid grid-cols-[72px_minmax(160px,1.4fr)_1fr_1fr_0.9fr] gap-4 border-b border-border bg-muted/30 px-5 py-3 text-xs font-semibold text-muted-foreground lg:grid-cols-[80px_minmax(180px,1.5fr)_1fr_1fr_1fr] lg:px-6">
               <div />
               <div>Movie Title</div>
@@ -179,47 +179,54 @@ function Dashboard() {
           </div>
 
           {/* Mobile Cards */}
-          {!loadingMovies && movies.length > 0 && (
-            <div className="space-y-3 p-4 md:hidden">
-              {movies.map((m) => {
-                const isPremium = (m as any).access_level === "PREMIUM";
-                return (
-                  <div key={m.id} className="rounded-2xl border border-border p-4">
-                    <div className="flex gap-3">
-                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-600">
-                        {m.thumbnail && (
-                          <img
-                            src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
-                            alt={m.title}
-                            className="h-full w-full object-cover"
-                          />
-                        )}
+          <div className="lg:hidden">
+            {loadingMovies ? (
+              <div className="space-y-2 p-4">
+                {[1, 2, 3].map((i) => <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />)}
+              </div>
+            ) : movies.length === 0 ? (
+              <div className="py-14 text-center text-sm text-muted-foreground">No movies uploaded yet.</div>
+            ) : (
+              <div className="space-y-3 p-4">
+                {movies.map((m) => {
+                  const isPremium = (m as any).access_level === "PREMIUM";
+                  return (
+                    <div key={m.id} className="rounded-2xl border border-border p-4">
+                      <div className="flex gap-3">
+                        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-600">
+                          {m.thumbnail && (
+                            <img
+                              src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                              alt={m.title}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="line-clamp-2 font-semibold leading-tight">{m.title}</div>
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            {m.release_year || m.category_names?.[0] || "—"}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="line-clamp-2 font-semibold leading-tight">{m.title}</div>
-                        <div className="mt-1 text-xs text-muted-foreground">
-                          {m.release_year || m.category_names?.[0] || "—"}
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">{formatDate(m.created_at)}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
+                            <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                          </span>
+                          <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${isPremium ? "bg-sky-500/10 text-sky-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                            {isPremium ? "Premium" : "Basic"}
+                          </span>
                         </div>
                       </div>
                     </div>
-
-                    <div className="mt-4 flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{formatDate(m.created_at)}</span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
-                        Active
-                      </span>
-                    </div>
-
-                    <div className="mt-2">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${isPremium ? "bg-sky-500/10 text-sky-600" : "bg-emerald-500/10 text-emerald-600"}`}>
-                        {isPremium ? "Premium Access" : "Basic Access"}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Subscription Pricing */}
