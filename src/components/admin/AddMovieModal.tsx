@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import BaseModal from "@/components/ui/BaseModal";
+import TouchButton from "@/components/ui/TouchButton";
 import { X, Upload, ImageIcon, Check, Pencil } from "lucide-react";
 import { API_BASE, getAccessToken } from "@/lib/auth";
 
@@ -197,14 +198,10 @@ export function AddMovieModal({
 
   if (!open) return null;
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4"
-      onClick={onClose}
-    >
+  return (
+    <BaseModal open={open} onClose={onClose} className="p-0">
       <div
-        onClick={(e) => e.stopPropagation()}
-        className="flex h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-card shadow-2xl"
+        className="flex h-full w-full flex-col overflow-hidden"
         style={{ animation: "fadeIn 0.2s ease-out" }}
       >
         {/* Header */}
@@ -219,12 +216,9 @@ export function AddMovieModal({
                 : "Upload a movie to the Cinehubs platform"}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-lg hover:bg-muted transition-colors"
-          >
+          <TouchButton onClick={onClose} className="shrink-0 bg-transparent hover:bg-muted">
             <X className="h-5 w-5" />
-          </button>
+          </TouchButton>
         </div>
 
         {/* Scrollable body */}
@@ -277,7 +271,7 @@ export function AddMovieModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter movie title"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -300,7 +294,7 @@ export function AddMovieModal({
                 value={releaseYear}
                 onChange={(e) => setReleaseYear(e.target.value)}
                 placeholder="2025"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -309,7 +303,7 @@ export function AddMovieModal({
                 value={runtime}
                 onChange={(e) => setRuntime(e.target.value)}
                 placeholder="142 min"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -318,7 +312,7 @@ export function AddMovieModal({
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}
                 placeholder="18+"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
           </div>
@@ -330,7 +324,7 @@ export function AddMovieModal({
               value={director}
               onChange={(e) => setDirector(e.target.value)}
               placeholder="Director's full name"
-              className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
             />
           </div>
 
@@ -412,7 +406,7 @@ export function AddMovieModal({
                       )
                     }
                     placeholder={`Cast ${i + 1} — Full name`}
-                    className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                    className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
                   />
                   <input
                     value={c.role}
@@ -422,7 +416,7 @@ export function AddMovieModal({
                       )
                     }
                     placeholder="Role (e.g. Lead Actor)"
-                    className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold"
+                    className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
                   />
                 </div>
               ))}
@@ -487,7 +481,6 @@ export function AddMovieModal({
           )}
         </div>
       </div>
-    </div>,
-    document.body
+    </BaseModal>
   );
 }

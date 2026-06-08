@@ -225,3 +225,21 @@ input[type="text"]:focus {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 0 0 3px oklch(0.78 0.14 80 / 0.12);
 }
+
+/* Mobile touch target helpers */
+@media (max-width: 640px) {
+  .touch-target {
+    padding-top: 0.75rem; /* 12px */
+    padding-bottom: 0.75rem;
+    min-height: 44px;
+  }
+  input[type="text"], textarea, select {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+/* Ensure horizontal overflow is guarded */
+html, body, #root {
+  overflow-x: hidden;
+}
