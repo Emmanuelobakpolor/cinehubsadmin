@@ -55,7 +55,7 @@ export function SubscriptionPricingModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-card p-8 shadow-xl"
+        className="w-full max-w-md rounded-2xl bg-card p-5 shadow-xl sm:p-8"
       >
         <div className="flex items-start justify-between">
           <div>

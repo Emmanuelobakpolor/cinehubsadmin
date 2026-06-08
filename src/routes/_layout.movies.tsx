@@ -96,7 +96,7 @@ function MoviesPage() {
           </div>
         ) : empty ? (
           <div className="grid place-items-center py-20">
-            <div className="w-full max-w-md rounded-2xl bg-card p-12 text-center shadow-sm">
+            <div className="w-full max-w-md rounded-2xl bg-card p-6 text-center shadow-sm sm:p-12">
               <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-muted">
                 <ImageIcon className="h-10 w-10 text-muted-foreground" />
               </div>

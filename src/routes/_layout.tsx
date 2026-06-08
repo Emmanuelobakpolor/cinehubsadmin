@@ -14,20 +14,27 @@ export const Route = createFileRoute("/_layout")({
 });
 
 function LayoutShell() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 1024
+  );
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
-     
-      <Sidebar onCollapsedChange={setCollapsed} />
+
+      <Sidebar
+        onCollapsedChange={setCollapsed}
+        mobileOpen={mobileOpen}
+        onMobileOpenChange={setMobileOpen}
+      />
       <main
         className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-16 md:pb-0 ${
           collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
         }`}
       >
         <div className="mx-auto w-full min-w-0 max-w-[1800px] px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
-          <Topbar />
+          <Topbar onMenuClick={() => setMobileOpen(true)} />
           <div key={pathname} className="page-enter min-w-0 overflow-x-hidden">
             <Outlet />
           </div>

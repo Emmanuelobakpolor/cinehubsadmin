@@ -76,7 +76,7 @@ function BroadcastPage() {
   if (broadcasts.length === 0) {
     return (
       <>
-        <div className="rounded-2xl bg-card p-8 sm:p-16 text-center shadow-sm">
+        <div className="rounded-2xl bg-card p-6 text-center shadow-sm sm:p-12">
           <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gold-soft">
             <Radio className="h-9 w-9 text-gold" />
           </div>
@@ -106,16 +106,16 @@ function BroadcastPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm md:flex-row md:items-center md:justify-between md:px-6 md:py-5">
+      <div className="flex flex-col gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <div>
-          <h1 className="text-xl font-bold md:text-2xl">Push Broadcast</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">Push Broadcast</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
             Create, manage and send push broadcasts to your users.
           </p>
         </div>
         <button
           onClick={openModal}
-          className="flex items-center justify-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-semibold hover:bg-gold/90 active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-sm font-semibold hover:bg-gold/90 active:scale-[0.98] sm:w-auto sm:px-5 sm:py-2.5"
         >
           <Radio className="h-4 w-4" />
           Create New Broadcast

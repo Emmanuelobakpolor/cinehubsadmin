@@ -76,7 +76,7 @@ function Dashboard() {
   return (
     <>
       {/* Stats Grid */}
-      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-4 shadow-sm transition-all hover:shadow-md">
             <div className="flex items-start gap-3">
@@ -89,17 +89,19 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
               <Link
                 to={s.link}
                 className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
               >
-                View All <span>›</span>
+                View All ›
               </Link>
 
               {s.withMonth ? (
-                <button className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-xs">
-                  This Month <ChevronDown className="h-3 w-3" />
+                <button className="flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] sm:px-2.5 sm:text-xs">
+                  <span className="min-[480px]:hidden">Month</span>
+                  <span className="hidden min-[480px]:inline">This Month</span>
+                  <ChevronDown className="h-3 w-3" />
                 </button>
               ) : (
                 <span className="flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">

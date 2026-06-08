@@ -38,96 +38,48 @@ function UploadMoviePage() {
 
   return (
     <>
-      <div className="space-y-6">
-        {/* Mobile View */}
-        <div className="space-y-4 sm:hidden">
-          <div className="rounded-2xl bg-card px-4 py-4 shadow-sm">
-            <h1 className="text-xl font-bold">Upload Movie</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Add a new movie to the Cinehubs catalog</p>
-            <button
-              onClick={() => setOpen(true)}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-gold/90 active:scale-[0.98]"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Movie
-            </button>
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+          <div>
+            <h1 className="text-xl font-bold sm:text-2xl">Upload Movie</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">Add a new movie to the Cinehubs catalog</p>
           </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {statCards.map(({ icon: Icon, title, value, sub }) => (
-              <div key={title} className="rounded-2xl bg-card px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold/10">
-                    <Icon className="h-5 w-5 text-gold" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs text-muted-foreground">{title}</div>
-                    <div className="text-lg font-bold">{value}</div>
-                    <div className="text-xs text-muted-foreground">{sub}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div
+          <button
             onClick={() => setOpen(true)}
-            className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 px-4 py-10 text-center transition-all hover:border-gold/60 hover:bg-gold/10"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-gold/90 active:scale-[0.98] sm:w-auto sm:px-5 sm:py-2.5"
           >
-            <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110">
-              <Upload className="h-7 w-7 text-gold" />
-            </div>
-            <div>
-              <p className="font-semibold">Tap to upload a new movie</p>
-              <p className="text-sm text-muted-foreground">MP4, MOV supported · up to 8 GB</p>
-            </div>
-          </div>
+            <Upload className="h-4 w-4" />
+            Upload Movie
+          </button>
         </div>
 
-        {/* Desktop/Tablet View */}
-        <div className="hidden space-y-6 sm:block">
-          <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm md:flex-row md:items-center md:justify-between md:px-6 md:py-5">
-            <div>
-              <h1 className="text-xl font-bold md:text-2xl">Upload Movie</h1>
-              <p className="text-sm text-muted-foreground">Add a new movie to the Cinehubs catalog</p>
-            </div>
-            <button
-              onClick={() => setOpen(true)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90 active:scale-[0.98]"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Movie
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {statCards.map(({ icon: Icon, title, value, sub }) => (
-              <div key={title} className="rounded-2xl bg-card px-5 py-4 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-full bg-gold/10">
-                    <Icon className="h-5 w-5 text-gold" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">{title}</div>
-                    <div className="text-lg font-bold">{value}</div>
-                    <div className="text-xs text-muted-foreground">{sub}</div>
-                  </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+          {statCards.map(({ icon: Icon, title, value, sub }) => (
+            <div key={title} className="rounded-2xl bg-card px-4 py-4 shadow-sm sm:px-5">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold/10">
+                  <Icon className="h-5 w-5 text-gold" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs text-muted-foreground">{title}</div>
+                  <div className="text-lg font-bold">{value}</div>
+                  <div className="text-xs text-muted-foreground">{sub}</div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          <div
-            onClick={() => setOpen(true)}
-            className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 py-10 text-center transition-all hover:border-gold/60 hover:bg-gold/10 sm:py-16"
-          >
-            <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110">
-              <Upload className="h-8 w-8 text-gold" />
-            </div>
-            <div>
-              <p className="font-semibold">Click to upload a new movie</p>
-              <p className="text-sm text-muted-foreground">MP4, MOV supported · up to 8 GB</p>
-            </div>
+        <div
+          onClick={() => setOpen(true)}
+          className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 px-4 py-10 text-center transition-all hover:border-gold/60 hover:bg-gold/10 sm:py-16"
+        >
+          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110 sm:h-16 sm:w-16">
+            <Upload className="h-7 w-7 text-gold sm:h-8 sm:w-8" />
+          </div>
+          <div>
+            <p className="font-semibold">Click to upload a new movie</p>
+            <p className="text-sm text-muted-foreground">MP4, MOV supported · up to 8 GB</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film } from "lucide-react";
+import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film, Menu } from "lucide-react";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { getStoredUser, logoutAndRedirect, API_BASE, getAccessToken } from "@/lib/auth";
 import logo from "@/assets/logo.png";
@@ -43,7 +43,7 @@ const PAGE_NAMES: Record<string, string> = {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export function Topbar() {
+export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const pageName = PAGE_NAMES[pathname] ?? "Dashboard";
@@ -133,6 +133,15 @@ export function Topbar() {
       <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
         {/* Left: menu + search */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+          {/* Hamburger — mobile only, opens sidebar drawer */}
+          <button
+            onClick={onMenuClick}
+            className="md:hidden grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-colors hover:bg-muted"
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
           {/* Logo + page name visible on mobile only */}
           <img src={logo} alt="CineHubs" className="md:hidden h-8 w-8 shrink-0 rounded-lg object-cover" />
           <span className="md:hidden text-sm font-semibold truncate">{pageName}</span>

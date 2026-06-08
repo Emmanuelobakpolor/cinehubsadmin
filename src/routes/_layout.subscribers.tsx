@@ -81,10 +81,12 @@ function SubscribersPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-1 rounded-2xl bg-card px-5 py-4 shadow-sm sm:px-6 sm:py-5">
-        <div className="text-base sm:text-lg">
-          <span className="font-medium">Number of Subscribers:</span>{" "}
-          <span className="font-bold">{loading ? "—" : counts.total}</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:px-6 sm:py-5">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold sm:text-2xl">Subscribers</h1>
+          <p className="text-sm text-muted-foreground">
+            {loading ? "Loading…" : `${counts.total} total subscribers`}
+          </p>
         </div>
       </div>
 
