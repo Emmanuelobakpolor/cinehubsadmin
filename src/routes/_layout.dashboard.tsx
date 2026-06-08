@@ -72,29 +72,29 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-card p-4 shadow-sm sm:p-5">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className={`grid h-11 w-11 place-items-center rounded-full sm:h-12 sm:w-12 ${s.color}`}>
-                <s.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+          <div key={s.label} className="rounded-2xl bg-card p-3 shadow-sm sm:p-4 md:p-5">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-full sm:h-11 sm:w-11 ${s.color}`}>
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <div>
-                <div className="text-sm text-muted-foreground">{s.label}</div>
-                <div className="mt-1 text-xl font-bold sm:text-2xl">{s.value}</div>
+              <div className="min-w-0">
+                <div className="text-[11px] leading-tight text-muted-foreground sm:text-sm">{s.label}</div>
+                <div className="mt-0.5 text-base font-bold sm:text-2xl">{s.value}</div>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between sm:mt-5">
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground/80">
+            <div className="mt-3 flex items-center justify-between sm:mt-4">
+              <button className="flex items-center gap-1 text-[11px] font-medium text-foreground/80 sm:text-sm">
                 View All <span>›</span>
               </button>
               {s.withMonth ? (
-                <button className="flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs">
-                  Month <ChevronDown className="h-3 w-3" />
+                <button className="flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
+                  Month <ChevronDown className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 </button>
               ) : (
-                <span className="flex items-center gap-1 rounded-full bg-success-soft px-2 py-1 text-xs font-medium text-success">
-                  <TrendingUp className="h-3 w-3" /> 10.0%
+                <span className="flex items-center gap-1 rounded-full bg-success-soft px-1.5 py-0.5 text-[10px] font-medium text-success sm:px-2 sm:py-1 sm:text-xs">
+                  <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> 10.0%
                 </span>
               )}
             </div>
@@ -149,7 +149,7 @@ function Dashboard() {
           )}
           {/* Mobile cards */}
           {!loadingMovies && movies.length > 0 && (
-            <div className="space-y-3 p-3 md:hidden sm:p-4">
+            <div className="space-y-3 p-4 md:hidden">
               {movies.map((m) => (
                 <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
                   <div className="flex gap-3">

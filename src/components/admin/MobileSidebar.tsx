@@ -104,10 +104,10 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
         <button
           onClick={onClose}
-          className="absolute right-3 top-6 grid h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-sidebar-active/60 text-gold"
+          className="absolute right-3 top-5 grid h-11 w-11 items-center justify-center rounded-full border border-gold/30 bg-sidebar-active/60 text-gold"
           aria-label="Close menu"
         >
-          <ChevronLeft className="h-4 w-4 rotate-180" />
+          <ChevronLeft className="h-5 w-5 rotate-180" />
         </button>
       </aside>
     </>

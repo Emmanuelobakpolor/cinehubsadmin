@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star } from "lucide-react";
+import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus } from "lucide-react";
 import { AddMovieModal, type Movie } from "@/components/admin/AddMovieModal";
 import { SuccessModal } from "@/components/admin/SuccessModal";
 import { API_BASE, getAccessToken } from "@/lib/auth";
@@ -73,11 +73,18 @@ function MoviesPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+      <div className="flex items-center justify-between gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:px-6 sm:py-5">
         <div>
           <h1 className="text-xl font-bold sm:text-2xl">Movies</h1>
           <p className="text-sm text-muted-foreground">List of Movies in Cinehubs feed</p>
         </div>
+        <button
+          onClick={() => setAddOpen(true)}
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gold px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90 sm:px-4"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add Movie</span>
+        </button>
       </div>
 
       <div className="mt-6 rounded-2xl bg-card shadow-sm">

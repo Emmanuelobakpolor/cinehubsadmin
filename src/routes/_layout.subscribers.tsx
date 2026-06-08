@@ -324,17 +324,17 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-1 min-w-[130px] sm:min-w-[160px] items-center gap-3 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
+      className={`flex min-w-[120px] max-w-[calc(50%-6px)] sm:max-w-none sm:flex-1 sm:min-w-[150px] items-center gap-2 sm:gap-3 rounded-2xl px-3 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
         active ? "bg-primary/10 ring-2 ring-primary" : "bg-card"
       }`}
     >
       <span
-        className={`grid h-6 w-6 place-items-center rounded-full border-2 ${color.replace("bg-", "border-")}`}
+        className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 sm:h-6 sm:w-6 ${color.replace("bg-", "border-")}`}
       >
-        <span className={`h-3 w-3 rounded-full ${color}`} />
+        <span className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${color}`} />
       </span>
-      <span className="flex-1 font-semibold text-left text-sm sm:text-base">{label}</span>
-      <span className="font-bold text-sm sm:text-base">{value}</span>
+      <span className="min-w-0 flex-1 truncate text-left text-xs font-semibold sm:text-sm">{label}</span>
+      <span className="shrink-0 font-bold text-xs sm:text-sm">{value}</span>
     </button>
   );
 }

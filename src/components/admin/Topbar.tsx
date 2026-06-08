@@ -129,10 +129,10 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <button
             onClick={onToggleMobileMenu}
-            className="md:hidden grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors sm:h-10 sm:w-10"
+            className="md:hidden grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
             aria-label="Open menu"
           >
-            <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Menu className="h-5 w-5" />
           </button>
 
           <div className="relative hidden min-w-0 flex-1 sm:block sm:max-w-xl lg:max-w-2xl">
@@ -151,9 +151,9 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
           <div className="relative" ref={bellRef}>
             <button
               onClick={openBell}
-              className="relative grid h-9 w-9 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors sm:h-10 sm:w-10"
+              className="relative grid h-11 w-11 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
             >
-              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
                 <span className="absolute right-1 top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold leading-none text-white">
                   {unreadCount}
@@ -204,7 +204,7 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
               onClick={() => setMenuOpen((o) => !o)}
               className="flex items-center gap-2 rounded-xl px-1.5 py-1.5 transition-colors hover:bg-muted sm:gap-3 sm:px-2"
             >
-              <div className="h-9 w-9 overflow-hidden rounded-full bg-muted sm:h-10 sm:w-10 lg:h-11 lg:w-11">
+              <div className="h-11 w-11 overflow-hidden rounded-full bg-muted lg:h-11 lg:w-11">
                 <img
                   src={logo}
                   alt="Admin"
