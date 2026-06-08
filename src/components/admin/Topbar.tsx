@@ -123,8 +123,8 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
   const handleLogout = () => logoutAndRedirect(router.navigate);
 
   return (
-    <div className="relative z-40 mb-3 rounded-2xl bg-card px-3 py-2.5 shadow-sm sm:mb-4 sm:px-4 sm:py-3 md:px-5 lg:px-6 lg:py-4">
-      <div className="flex items-center justify-between gap-2 sm:gap-3">
+    <div className="relative z-40 mb-3 w-full min-w-0 rounded-2xl bg-card px-2.5 py-2.5 shadow-sm sm:mb-4 sm:px-4 sm:py-3 md:px-5 lg:px-6 lg:py-4">
+      <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
         {/* Left: menu + search */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <button
@@ -146,7 +146,7 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
         </div>
 
         {/* Right: actions */}
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3 md:gap-4">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3 md:gap-4">
           {/* Notification bell */}
           <div className="relative" ref={bellRef}>
             <button
@@ -202,7 +202,7 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((o) => !o)}
-              className="flex items-center gap-2 rounded-xl px-1.5 py-1.5 transition-colors hover:bg-muted sm:gap-3 sm:px-2"
+              className="flex items-center gap-1.5 rounded-xl px-1 py-1.5 transition-colors hover:bg-muted sm:gap-3 sm:px-2"
             >
               <div className="h-11 w-11 overflow-hidden rounded-full bg-muted lg:h-11 lg:w-11">
                 <img

@@ -24,17 +24,17 @@ function LayoutShell() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <Sidebar onCollapsedChange={setCollapsed} />
       <main
-        className={`main-content transition-all duration-300 ${
+        className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 ${
           collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
         }`}
       >
-        <div className="mx-auto w-full max-w-[1800px] px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
+        <div className="mx-auto w-full min-w-0 max-w-[1800px] px-2.5 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
           <Topbar onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)} />
-          <div key={pathname} className="page-enter">
+          <div key={pathname} className="page-enter min-w-0 overflow-x-hidden">
             <Outlet />
           </div>
         </div>

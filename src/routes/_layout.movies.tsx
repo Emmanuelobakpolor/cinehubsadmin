@@ -73,8 +73,8 @@ function MoviesPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:px-6 sm:py-5">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:px-6 sm:py-5">
+        <div className="min-w-0">
           <h1 className="text-xl font-bold sm:text-2xl">Movies</h1>
           <p className="text-sm text-muted-foreground">List of Movies in Cinehubs feed</p>
         </div>
@@ -87,7 +87,7 @@ function MoviesPage() {
         </button>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-card shadow-sm">
+      <div className="mt-6 min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
         {loading ? (
           <div className="space-y-4 p-4 sm:p-6">
             {[1, 2, 3].map((i) => (
@@ -148,7 +148,7 @@ function MoviesPage() {
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground">{m.release_year || m.category_name}</div>
+                    <div className="text-sm text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
                   </div>
 
                   <div>
@@ -201,7 +201,7 @@ function MoviesPage() {
             </div>
 
             {/* Mobile cards */}
-            <div className="sm:hidden space-y-3 p-4">
+            <div className="space-y-3 p-4 sm:hidden">
               {movies.map((m) => (
                 <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
                   <div className="flex gap-3">
@@ -223,7 +223,7 @@ function MoviesPage() {
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-muted-foreground">{m.release_year || m.category_name}</div>
+                      <div className="break-words text-xs text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
                       <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">
                         <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
                       </div>
@@ -231,7 +231,7 @@ function MoviesPage() {
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>{formatDate(m.created_at)}</span>
-                    <span>{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</span>
+                    <span>{(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}</span>
                   </div>
                   <div className="relative">
                     <button

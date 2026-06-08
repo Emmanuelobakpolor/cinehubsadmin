@@ -72,9 +72,9 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-card p-3 shadow-sm sm:p-4 md:p-5">
+          <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-3 shadow-sm sm:p-4 md:p-5">
             <div className="flex items-start gap-2 sm:gap-3">
               <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-full sm:h-11 sm:w-11 ${s.color}`}>
                 <s.icon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -84,7 +84,7 @@ function Dashboard() {
                 <div className="mt-0.5 text-base font-bold sm:text-2xl">{s.value}</div>
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-between sm:mt-4">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4">
               <button className="flex items-center gap-1 text-[11px] font-medium text-foreground/80 sm:text-sm">
                 View All <span>›</span>
               </button>
@@ -102,9 +102,9 @@ function Dashboard() {
         ))}
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 xl:mt-6 xl:gap-6 2xl:grid-cols-[minmax(0,1.7fr)_minmax(340px,1fr)]">
+      <div className="mt-5 grid min-w-0 grid-cols-1 gap-5 xl:mt-6 xl:gap-6 2xl:grid-cols-[minmax(0,1.7fr)_minmax(340px,1fr)]">
         {/* Movies table */}
-        <div className="rounded-2xl bg-card shadow-sm">
+        <div className="min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
           <div className="border-b border-border px-5 py-4 sm:px-6">
             <h2 className="text-sm font-semibold">Recent Movies</h2>
           </div>
@@ -133,8 +133,8 @@ function Dashboard() {
                     />
                   )}
                 </div>
-                <div>
-                  <div className="line-clamp-1 font-medium">{m.title}</div>
+                <div className="min-w-0">
+                  <div className="line-clamp-1 break-words font-medium">{m.title}</div>
                   <div className="text-sm text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
                 </div>
                 <div className="text-sm">{formatDate(m.created_at)}</div>
@@ -179,8 +179,8 @@ function Dashboard() {
         </div>
 
         {/* Right column */}
-        <div className="flex flex-col gap-6">
-          <div className="rounded-2xl bg-card shadow-sm">
+        <div className="flex min-w-0 flex-col gap-6">
+          <div className="min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
             <div className="border-b border-border px-4 py-4 text-center font-semibold sm:px-6">
               Subscription Pricing
             </div>
@@ -190,12 +190,12 @@ function Dashboard() {
               </div>
             ) : (
               plans.map((plan) => (
-                <div key={plan.id} className="flex items-start gap-3 border-b border-border px-4 py-4 last:border-0 sm:gap-4 sm:px-6 sm:py-5">
+                <div key={plan.id} className="flex min-w-0 items-start gap-3 border-b border-border px-4 py-4 last:border-0 sm:gap-4 sm:px-6 sm:py-5">
                   <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gold/90 sm:h-14 sm:w-14">
                     <Gem className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="font-bold text-gold">{plan.name}</div>
                       <button
                         onClick={() => setOpenPlan(plan)}
@@ -204,7 +204,7 @@ function Dashboard() {
                         <Edit className="h-3.5 w-3.5" /> Edit
                       </button>
                     </div>
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="mt-1 break-words text-sm text-muted-foreground">
                       This will be charged only per movie, when exhausted you'll need to subscribe again
                     </p>
                     <div className="mt-2 text-lg font-bold sm:text-xl">
