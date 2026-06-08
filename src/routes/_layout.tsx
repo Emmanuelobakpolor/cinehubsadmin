@@ -16,17 +16,8 @@ export const Route = createFileRoute("/_layout")({
 
 function LayoutShell() {
   const [collapsed, setCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const handler = (e: MediaQueryListEvent | MediaQueryList) => setIsMobile(e.matches);
-    setIsMobile(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -37,14 +28,11 @@ function LayoutShell() {
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <Sidebar onCollapsedChange={setCollapsed} />
       <main
-        className={`main-content transition-all duration-300 ${
-          isMobile ? "px-4 py-4" : collapsed ? "ml-[4.5rem] p-6" : "ml-64 p-6"
+        className={`main-content transition-all duration-300 px-4 py-4 ${
+          collapsed ? "md:ml-[4.5rem] md:p-6" : "md:ml-64 md:p-6"
         }`}
       >
-        <Topbar
-          isMobile={isMobile}
-          onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)}
-        />
+        <Topbar onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)} />
         <div key={pathname} className="page-enter">
           <Outlet />
         </div>

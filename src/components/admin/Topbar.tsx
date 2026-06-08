@@ -35,11 +35,10 @@ function notifIcon(title: string) {
 // ── Component ──────────────────────────────────────────────────────────────
 
 interface TopbarProps {
-  isMobile?: boolean;
   onToggleMobileMenu?: () => void;
 }
 
-export function Topbar({ isMobile = false, onToggleMobileMenu }: TopbarProps) {
+export function Topbar({ onToggleMobileMenu }: TopbarProps) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -125,17 +124,16 @@ export function Topbar({ isMobile = false, onToggleMobileMenu }: TopbarProps) {
 
   return (
     <div className={`relative z-40 mb-4 flex items-center justify-between gap-3 rounded-2xl bg-card px-4 py-3 shadow-sm md:px-6 md:py-4`}>
-      {isMobile && (
-        <button
-          onClick={onToggleMobileMenu}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
-          aria-label="Open menu"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-      )}
-      {/* Search */}
-      <div className={`relative flex-1 max-w-xl ${isMobile ? "hidden sm:block" : ""}`}>
+      {/* Hamburger — visible on mobile only, hidden on md+ */}
+      <button
+        onClick={onToggleMobileMenu}
+        className="md:hidden grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+      {/* Search — hidden on very small screens, visible on sm+ */}
+      <div className="relative flex-1 max-w-xl hidden sm:block">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
