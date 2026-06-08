@@ -182,7 +182,7 @@ function CategoriesPage() {
                   <div className="relative">
                     <button
                       onClick={() => setMenuId(menuId === cat.id ? null : cat.id)}
-                      className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
+                      className="grid h-10 w-10 place-items-center rounded-md hover:bg-muted"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>

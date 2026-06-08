@@ -286,14 +286,14 @@ function SubscribersPage() {
 
         <div className="flex flex-wrap items-center gap-3 px-5 py-4 sm:px-6 sm:py-4">
           <button
-            className="rounded-lg border border-border px-4 py-2.5 text-sm disabled:opacity-40"
+            className="rounded-lg border border-border px-4 py-3 text-sm disabled:opacity-40"
             disabled={page === 0}
             onClick={() => setPage((p) => p - 1)}
           >
             Previous
           </button>
           <button
-            className="rounded-lg border border-border px-4 py-2.5 text-sm disabled:opacity-40"
+            className="rounded-lg border border-border px-4 py-3 text-sm disabled:opacity-40"
             disabled={page >= totalPages - 1}
             onClick={() => setPage((p) => p + 1)}
           >
@@ -324,7 +324,7 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`flex min-w-[120px] max-w-[calc(50%-6px)] sm:max-w-none sm:flex-1 sm:min-w-[150px] items-center gap-2 sm:gap-3 rounded-2xl px-3 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
+      className={`flex min-w-[110px] max-w-[calc(50%-6px)] sm:max-w-none sm:flex-1 sm:min-w-[150px] items-center gap-2 sm:gap-3 rounded-2xl px-3 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
         active ? "bg-primary/10 ring-2 ring-primary" : "bg-card"
       }`}
     >

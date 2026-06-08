@@ -1,5 +1,5 @@
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
-import { LayoutGrid, Package, Film, Tags, Users, Radio, ChevronLeft, LogOut } from "lucide-react";
+import { LayoutGrid, Package, Film, Tags, Users, Radio, X, LogOut } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { logoutAndRedirect } from "@/lib/auth";
 import { useEffect } from "react";
@@ -107,7 +107,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
           className="absolute right-3 top-5 grid h-11 w-11 items-center justify-center rounded-full border border-gold/30 bg-sidebar-active/60 text-gold"
           aria-label="Close menu"
         >
-          <ChevronLeft className="h-5 w-5 rotate-180" />
+          <X className="h-5 w-5" />
         </button>
       </aside>
     </>

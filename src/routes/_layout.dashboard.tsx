@@ -72,7 +72,7 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-3 shadow-sm sm:p-4 md:p-5">
             <div className="flex items-start gap-2 sm:gap-3">

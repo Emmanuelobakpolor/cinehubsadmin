@@ -164,7 +164,7 @@ function MoviesPage() {
                   <div className="relative">
                     <button
                       onClick={() => setMenuId(menuId === m.id ? null : m.id)}
-                      className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
+                      className="grid h-10 w-10 place-items-center rounded-md hover:bg-muted"
                     >
                       <MoreHorizontal className="h-5 w-5" />
                     </button>

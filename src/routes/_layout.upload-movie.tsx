@@ -55,7 +55,7 @@ function UploadMoviePage() {
         </div>
 
         {/* Stats cards */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {statCards.map(({ icon: Icon, title, value, sub }) => (
             <div key={title} className="rounded-2xl bg-card px-5 py-4 shadow-sm">
               <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ function UploadMoviePage() {
         {/* CTA card */}
         <div
           onClick={() => setOpen(true)}
-          className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 py-16 text-center transition-all hover:border-gold/60 hover:bg-gold/10"
+          className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 py-10 text-center transition-all hover:border-gold/60 hover:bg-gold/10 sm:py-16"
         >
           <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110">
             <Upload className="h-8 w-8 text-gold" />
