@@ -28,13 +28,15 @@ function LayoutShell() {
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <Sidebar onCollapsedChange={setCollapsed} />
       <main
-        className={`main-content transition-all duration-300 px-4 py-4 ${
-          collapsed ? "md:ml-[4.5rem] md:p-6" : "md:ml-64 md:p-6"
+        className={`main-content transition-all duration-300 ${
+          collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
         }`}
       >
-        <Topbar onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)} />
-        <div key={pathname} className="page-enter">
-          <Outlet />
+        <div className="mx-auto w-full max-w-[1800px] px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
+          <Topbar onToggleMobileMenu={() => setMobileMenuOpen((o) => !o)} />
+          <div key={pathname} className="page-enter">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

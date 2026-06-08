@@ -51,7 +51,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col bg-sidebar transform transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed left-0 top-0 z-50 flex h-dvh w-[86vw] max-w-[22rem] flex-col bg-sidebar transform transition-transform duration-300 ease-out md:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -104,7 +104,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
         <button
           onClick={onClose}
-          className="absolute -right-10 top-20 grid h-8 w-8 items-center justify-center rounded-r-lg border border-gold/30 bg-sidebar text-gold"
+          className="absolute right-3 top-6 grid h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-sidebar-active/60 text-gold"
           aria-label="Close menu"
         >
           <ChevronLeft className="h-4 w-4 rotate-180" />

@@ -45,8 +45,8 @@ export function Sidebar({ onCollapsedChange }: SidebarProps) {
 
   return (
     <aside
-      className={`sidebar fixed left-0 top-0 z-30 hidden md:flex h-screen flex-col bg-sidebar border-r border-white/10 text-sidebar-foreground transition-all duration-300 ease-out ${
-        collapsed ? "w-16" : "w-64"
+      className={`sidebar fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-white/10 bg-sidebar text-sidebar-foreground transition-all duration-300 ease-out md:flex ${
+        collapsed ? "md:w-[4.5rem]" : "md:w-64 xl:w-72"
       }`}
     >
       {/* Logo Area */}

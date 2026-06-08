@@ -72,19 +72,19 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 2xl:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-card p-5 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className={`grid h-12 w-12 place-items-center rounded-full ${s.color}`}>
-                <s.icon className="h-6 w-6" />
+          <div key={s.label} className="rounded-2xl bg-card p-4 shadow-sm sm:p-5">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className={`grid h-11 w-11 place-items-center rounded-full sm:h-12 sm:w-12 ${s.color}`}>
+                <s.icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
               <div>
                 <div className="text-sm text-muted-foreground">{s.label}</div>
-                <div className="mt-1 text-2xl font-bold">{s.value}</div>
+                <div className="mt-1 text-xl font-bold sm:text-2xl">{s.value}</div>
               </div>
             </div>
-            <div className="mt-5 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between sm:mt-5">
               <button className="flex items-center gap-1 text-sm font-medium text-foreground/80">
                 View All <span>›</span>
               </button>
@@ -102,13 +102,13 @@ function Dashboard() {
         ))}
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="mt-5 grid grid-cols-1 gap-5 xl:mt-6 xl:gap-6 2xl:grid-cols-[minmax(0,1.7fr)_minmax(340px,1fr)]">
         {/* Movies table */}
         <div className="rounded-2xl bg-card shadow-sm">
           <div className="border-b border-border px-5 py-4 sm:px-6">
             <h2 className="text-sm font-semibold">Recent Movies</h2>
           </div>
-          <div className={`border-b border-border px-6 py-4 text-sm font-semibold hidden sm:grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] gap-4`}>
+          <div className="hidden grid-cols-[72px_minmax(160px,1.4fr)_1fr_1fr_0.8fr] gap-3 border-b border-border px-4 py-4 text-sm font-semibold md:grid lg:grid-cols-[80px_minmax(180px,1.5fr)_1fr_1fr_0.9fr] lg:gap-4 lg:px-6">
             <div />
             <div>Movie Title</div>
             <div>Date Added</div>
@@ -123,7 +123,7 @@ function Dashboard() {
             <div className="py-12 text-center text-sm text-muted-foreground">No movies yet.</div>
           ) : (
             movies.map((m) => (
-              <div key={m.id} className={`hidden sm:grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] items-center gap-4 border-b border-border px-6 py-4 last:border-0`}>
+              <div key={m.id} className="hidden items-center gap-3 border-b border-border px-4 py-4 last:border-0 md:grid md:grid-cols-[72px_minmax(160px,1.4fr)_1fr_1fr_0.8fr] lg:grid-cols-[80px_minmax(180px,1.5fr)_1fr_1fr_0.9fr] lg:gap-4 lg:px-6">
                 <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-500">
                   {m.thumbnail && (
                     <img
@@ -134,7 +134,7 @@ function Dashboard() {
                   )}
                 </div>
                 <div>
-                  <div className="font-medium line-clamp-1">{m.title}</div>
+                  <div className="line-clamp-1 font-medium">{m.title}</div>
                   <div className="text-sm text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
                 </div>
                 <div className="text-sm">{formatDate(m.created_at)}</div>
@@ -143,13 +143,13 @@ function Dashboard() {
                     <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
                   </span>
                 </div>
-                <div className="text-sm">{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
+                <div className="text-sm">{(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
               </div>
             ))
           )}
           {/* Mobile cards */}
           {!loadingMovies && movies.length > 0 && (
-            <div className="sm:hidden space-y-3 p-4">
+            <div className="space-y-3 p-3 md:hidden sm:p-4">
               {movies.map((m) => (
                 <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
                   <div className="flex gap-3">
@@ -171,7 +171,7 @@ function Dashboard() {
                     <span className="text-muted-foreground">{formatDate(m.created_at)}</span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">Active</span>
                   </div>
-                  <div className="text-xs text-muted-foreground">{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
+                  <div className="text-xs text-muted-foreground">{(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
                 </div>
               ))}
             </div>
@@ -181,7 +181,7 @@ function Dashboard() {
         {/* Right column */}
         <div className="flex flex-col gap-6">
           <div className="rounded-2xl bg-card shadow-sm">
-            <div className="border-b border-border px-6 py-4 text-center font-semibold">
+            <div className="border-b border-border px-4 py-4 text-center font-semibold sm:px-6">
               Subscription Pricing
             </div>
             {plans.length === 0 ? (
@@ -190,9 +190,9 @@ function Dashboard() {
               </div>
             ) : (
               plans.map((plan) => (
-                <div key={plan.id} className="flex items-start gap-4 border-b border-border px-6 py-5 last:border-0">
-                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-gold/90">
-                    <Gem className="h-7 w-7 text-white" />
+                <div key={plan.id} className="flex items-start gap-3 border-b border-border px-4 py-4 last:border-0 sm:gap-4 sm:px-6 sm:py-5">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gold/90 sm:h-14 sm:w-14">
+                    <Gem className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -207,7 +207,7 @@ function Dashboard() {
                     <p className="mt-1 text-sm text-muted-foreground">
                       This will be charged only per movie, when exhausted you'll need to subscribe again
                     </p>
-                    <div className="mt-2 text-xl font-bold">
+                    <div className="mt-2 text-lg font-bold sm:text-xl">
                       {formatPrice(plan.price)}{" "}
                       <span className="text-sm font-normal text-muted-foreground">/ movie</span>
                     </div>
