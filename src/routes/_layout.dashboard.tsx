@@ -75,37 +75,36 @@ function Dashboard() {
 
   return (
     <>
-      {/* Stats Grid */}
-      <div className="grid min-w-0 grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      {/* Stats Grid — 2 columns from 360px, 4 columns on lg+ */}
+      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-4 shadow-sm transition-all hover:shadow-md">
-            <div className="flex items-start gap-3">
-              <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-full sm:h-11 sm:w-11 ${s.color}`}>
-                <s.icon className="h-5 w-5" />
+          <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-3.5 shadow-sm transition-all hover:shadow-md sm:p-4">
+            <div className="flex items-start gap-2.5 sm:gap-3">
+              <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-full sm:h-10 sm:w-10 lg:h-11 lg:w-11 ${s.color}`}>
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs text-muted-foreground sm:text-sm">{s.label}</div>
-                <div className="mt-0.5 text-xl font-bold tracking-tight sm:text-2xl">{s.value}</div>
+                <div className="truncate text-[11px] text-muted-foreground sm:text-xs lg:text-sm">{s.label}</div>
+                <div className="mt-0.5 text-lg font-bold tracking-tight sm:text-xl lg:text-2xl">{s.value}</div>
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-1.5 sm:mt-4 sm:gap-2">
               <Link
                 to={s.link}
-                className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+                className="flex items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-colors sm:text-sm"
               >
                 View All ›
               </Link>
 
               {s.withMonth ? (
-                <button className="flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] sm:px-2.5 sm:text-xs">
-                  <span className="min-[480px]:hidden">Month</span>
-                  <span className="hidden min-[480px]:inline">This Month</span>
-                  <ChevronDown className="h-3 w-3" />
+                <button className="flex items-center gap-1 rounded-lg border border-border px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-[11px]">
+                  Month
+                  <ChevronDown className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 </button>
               ) : (
-                <span className="flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
-                  <TrendingUp className="h-3 w-3" /> +10%
+                <span className="flex items-center gap-0.5 rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-medium text-success sm:gap-1 sm:px-2.5 sm:py-1 sm:text-xs">
+                  <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> +10%
                 </span>
               )}
             </div>

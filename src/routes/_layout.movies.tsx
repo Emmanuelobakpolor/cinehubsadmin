@@ -203,9 +203,9 @@ function MoviesPage() {
             {/* Mobile cards */}
             <div className="space-y-3 p-4 sm:hidden">
               {movies.map((m) => (
-                <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
+                <div key={m.id} className="rounded-2xl border border-border p-4 space-y-3">
                   <div className="flex gap-3">
-                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-slate-500">
+                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-slate-500">
                       {m.thumbnail && (
                         <img
                           src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
@@ -215,53 +215,56 @@ function MoviesPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-medium text-sm line-clamp-2">{m.title}</span>
+                      <div className="flex flex-wrap items-start gap-1.5">
+                        <span className="font-semibold text-sm leading-snug line-clamp-2">{m.title}</span>
                         {m.id === featuredMovieId && (
-                          <span className="inline-flex items-center rounded-full bg-gold/15 px-1.5 py-0.5 text-[10px] font-semibold text-gold whitespace-nowrap">
-                            Featured
+                          <span className="inline-flex items-center gap-0.5 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold whitespace-nowrap">
+                            <Star className="h-2.5 w-2.5 fill-gold" /> Featured
                           </span>
                         )}
                       </div>
-                      <div className="break-words text-xs text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
-                      <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">
-                        <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                      <div className="mt-1 text-xs text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-[11px] font-medium text-success">
+                          <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                        </span>
+                        <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                          (m as any).access_level === "PREMIUM" ? "bg-sky-500/10 text-sky-600" : "bg-emerald-500/10 text-emerald-600"
+                        }`}>
+                          {(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}
+                        </span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{formatDate(m.created_at)}</span>
-                    <span>{(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}</span>
-                  </div>
+
+                  <div className="text-xs text-muted-foreground">{formatDate(m.created_at)}</div>
+
                   <div className="relative">
                     <button
                       onClick={() => setMenuId(menuId === m.id ? null : m.id)}
-                      className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted w-full justify-center"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-border px-3 py-3 text-sm font-medium hover:bg-muted active:scale-[0.98] transition-all"
                     >
                       Actions <MoreHorizontal className="h-4 w-4" />
                     </button>
                     {menuId === m.id && (
-                      <div className="absolute left-0 right-0 top-10 z-10 rounded-lg border border-border bg-card p-1 shadow-lg">
+                      <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-10 rounded-xl border border-border bg-card p-1.5 shadow-lg">
                         {m.id !== featuredMovieId && (
                           <button
                             onClick={() => handleSetFeatured(m.id)}
-                            className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm text-gold hover:bg-muted"
+                            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm text-gold hover:bg-muted"
                           >
                             Set as Featured <Star className="h-4 w-4" />
                           </button>
                         )}
                         <button
-                          onClick={() => {
-                            setEditingMovie(m);
-                            setMenuId(null);
-                          }}
-                          className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm hover:bg-muted"
+                          onClick={() => { setEditingMovie(m); setMenuId(null); }}
+                          className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm hover:bg-muted"
                         >
                           Edit Movie <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(m.id)}
-                          className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm text-destructive hover:bg-muted"
+                          className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm text-destructive hover:bg-muted"
                         >
                           Delete Movie <Trash2 className="h-4 w-4" />
                         </button>

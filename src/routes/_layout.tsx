@@ -29,7 +29,7 @@ function LayoutShell() {
         onMobileOpenChange={setMobileOpen}
       />
       <main
-        className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-16 md:pb-0 ${
+        className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-6 ${
           collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
         }`}
       >
