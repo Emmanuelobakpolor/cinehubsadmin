@@ -153,6 +153,7 @@ function SubscribersPage() {
         </button>
         </div>
 
+      <div className="mt-6 rounded-2xl bg-card shadow-sm overflow-hidden">
         {loading ? (
           <>
             <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-3 animate-pulse">

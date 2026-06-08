@@ -16,6 +16,7 @@ import { Route as LayoutUploadMovieRouteImport } from './routes/_layout.upload-m
 import { Route as LayoutSubscribersRouteImport } from './routes/_layout.subscribers'
 import { Route as LayoutMoviesRouteImport } from './routes/_layout.movies'
 import { Route as LayoutDashboardRouteImport } from './routes/_layout.dashboard'
+import { Route as LayoutCategoriesRouteImport } from './routes/_layout.categories'
 import { Route as LayoutBroadcastRouteImport } from './routes/_layout.broadcast'
 
 const LoginRoute = LoginRouteImport.update({
@@ -52,6 +53,11 @@ const LayoutDashboardRoute = LayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutCategoriesRoute = LayoutCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutBroadcastRoute = LayoutBroadcastRouteImport.update({
   id: '/broadcast',
   path: '/broadcast',
@@ -62,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/broadcast': typeof LayoutBroadcastRoute
+  '/categories': typeof LayoutCategoriesRoute
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
   '/subscribers': typeof LayoutSubscribersRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/broadcast': typeof LayoutBroadcastRoute
+  '/categories': typeof LayoutCategoriesRoute
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
   '/subscribers': typeof LayoutSubscribersRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
   '/_layout/broadcast': typeof LayoutBroadcastRoute
+  '/_layout/categories': typeof LayoutCategoriesRoute
   '/_layout/dashboard': typeof LayoutDashboardRoute
   '/_layout/movies': typeof LayoutMoviesRoute
   '/_layout/subscribers': typeof LayoutSubscribersRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/broadcast'
+    | '/categories'
     | '/dashboard'
     | '/movies'
     | '/subscribers'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/broadcast'
+    | '/categories'
     | '/dashboard'
     | '/movies'
     | '/subscribers'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/login'
     | '/_layout/broadcast'
+    | '/_layout/categories'
     | '/_layout/dashboard'
     | '/_layout/movies'
     | '/_layout/subscribers'
@@ -175,6 +187,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutDashboardRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/categories': {
+      id: '/_layout/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof LayoutCategoriesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/broadcast': {
       id: '/_layout/broadcast'
       path: '/broadcast'
@@ -187,6 +206,7 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutBroadcastRoute: typeof LayoutBroadcastRoute
+  LayoutCategoriesRoute: typeof LayoutCategoriesRoute
   LayoutDashboardRoute: typeof LayoutDashboardRoute
   LayoutMoviesRoute: typeof LayoutMoviesRoute
   LayoutSubscribersRoute: typeof LayoutSubscribersRoute
@@ -195,6 +215,7 @@ interface LayoutRouteChildren {
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutBroadcastRoute: LayoutBroadcastRoute,
+  LayoutCategoriesRoute: LayoutCategoriesRoute,
   LayoutDashboardRoute: LayoutDashboardRoute,
   LayoutMoviesRoute: LayoutMoviesRoute,
   LayoutSubscribersRoute: LayoutSubscribersRoute,
@@ -212,13 +233,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
