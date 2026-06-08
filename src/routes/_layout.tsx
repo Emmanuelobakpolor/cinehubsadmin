@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Outlet, createFileRoute, useRouterState, redirect } from "@tanstack/react-router";
 import { Sidebar } from "@/components/admin/Sidebar";
 import { Topbar } from "@/components/admin/Topbar";
-import { MobileSidebar } from "@/components/admin/MobileSidebar";
 import { isAuthenticated } from "@/lib/auth";
 
 export const Route = createFileRoute("/_layout")({
@@ -20,7 +19,7 @@ function LayoutShell() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
-      <MobileSidebar />
+     
       <Sidebar onCollapsedChange={setCollapsed} />
       <main
         className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-16 md:pb-0 ${
