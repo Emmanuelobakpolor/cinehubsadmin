@@ -45,7 +45,7 @@ export function Sidebar({ onCollapsedChange }: SidebarProps) {
 
   return (
     <aside
-      className={`sidebar fixed left-0 top-0 z-30 flex h-screen flex-col bg-sidebar border-r border-white/10 text-sidebar-foreground transition-all duration-300 ease-out ${
+      className={`sidebar fixed left-0 top-0 z-30 hidden md:flex h-screen flex-col bg-sidebar border-r border-white/10 text-sidebar-foreground transition-all duration-300 ease-out ${
         collapsed ? "w-16" : "w-64"
       }`}
     >

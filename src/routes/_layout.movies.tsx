@@ -73,16 +73,16 @@ function MoviesPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-2xl bg-card px-6 py-5 shadow-sm">
+      <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <div>
-          <h1 className="text-2xl font-bold">Movies</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">Movies</h1>
           <p className="text-sm text-muted-foreground">List of Movies in Cinehubs feed</p>
         </div>
       </div>
 
       <div className="mt-6 rounded-2xl bg-card shadow-sm">
         {loading ? (
-          <div className="space-y-4 p-6">
+          <div className="space-y-4 p-4 sm:p-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
             ))}
@@ -107,104 +107,173 @@ function MoviesPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-[80px_1.6fr_1fr_1fr_80px] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
+            <div className="hidden sm:grid grid-cols-[80px_1.6fr_1fr_1fr_80px] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
               <div />
               <div>Movie Title</div>
               <div>Date Added</div>
               <div>Status</div>
               <div>Action</div>
             </div>
-            {movies.map((m) => (
-              <div
-                key={m.id}
-                className="grid grid-cols-[80px_1.6fr_1fr_1fr_80px] items-center gap-4 border-b border-border px-6 py-4 last:border-0"
-              >
-                {/* Thumbnail */}
-                <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-500">
-                  {m.thumbnail && (
-                    <img
-                      src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
-                      alt={m.title}
-                      className="h-full w-full object-cover"
-                    />
-                  )}
-                </div>
 
-                {/* Title */}
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium line-clamp-1">{m.title}</span>
-                    {m.id === featuredMovieId && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[11px] font-semibold text-gold whitespace-nowrap">
-                        <Star className="h-3 w-3 fill-gold" /> Featured
-                      </span>
+            {/* Desktop rows */}
+            <div className="hidden sm:block">
+              {movies.map((m) => (
+                <div
+                  key={m.id}
+                  className="grid grid-cols-[80px_1.6fr_1fr_1fr_80px] items-center gap-4 border-b border-border px-6 py-4 last:border-0"
+                >
+                  <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-500">
+                    {m.thumbnail && (
+                      <img
+                        src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                        alt={m.title}
+                        className="h-full w-full object-cover"
+                      />
                     )}
                   </div>
-                  <div className="text-sm text-muted-foreground">{m.release_year || m.category_name}</div>
-                </div>
 
-                {/* Date */}
-                <div>
-                  <div className="text-sm">{formatDate(m.created_at)}</div>
-                </div>
-
-                {/* Status */}
-                <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
-                  </span>
-                </div>
-
-                {/* Action menu */}
-                <div className="relative">
-                  <button
-                    onClick={() => setMenuId(menuId === m.id ? null : m.id)}
-                    className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
-                  >
-                    <MoreHorizontal className="h-5 w-5" />
-                  </button>
-                  {menuId === m.id && (
-                    <div className="absolute right-0 top-9 z-10 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
-                      {m.id !== featuredMovieId && (
-                        <button
-                          onClick={() => handleSetFeatured(m.id)}
-                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gold hover:bg-muted"
-                        >
-                          Set as Featured <Star className="h-4 w-4" />
-                        </button>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium line-clamp-1">{m.title}</span>
+                      {m.id === featuredMovieId && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[11px] font-semibold text-gold whitespace-nowrap">
+                          <Star className="h-3 w-3 fill-gold" /> Featured
+                        </span>
                       )}
-                      <button
-                        onClick={() => {
-                          setEditingMovie(m);
-                          setMenuId(null);
-                        }}
-                        className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
-                      >
-                        Edit Movie <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(m.id)}
-                        className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
-                      >
-                        Delete Movie <Trash2 className="h-4 w-4" />
-                      </button>
                     </div>
-                  )}
+                    <div className="text-sm text-muted-foreground">{m.release_year || m.category_name}</div>
+                  </div>
+
+                  <div>
+                    <div className="text-sm">{formatDate(m.created_at)}</div>
+                  </div>
+
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                    </span>
+                  </div>
+
+                  <div className="relative">
+                    <button
+                      onClick={() => setMenuId(menuId === m.id ? null : m.id)}
+                      className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
+                    >
+                      <MoreHorizontal className="h-5 w-5" />
+                    </button>
+                    {menuId === m.id && (
+                      <div className="absolute right-0 top-9 z-10 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
+                        {m.id !== featuredMovieId && (
+                          <button
+                            onClick={() => handleSetFeatured(m.id)}
+                            className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gold hover:bg-muted"
+                          >
+                            Set as Featured <Star className="h-4 w-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            setEditingMovie(m);
+                            setMenuId(null);
+                          }}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
+                        >
+                          Edit Movie <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(m.id)}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
+                        >
+                          Delete Movie <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Mobile cards */}
+            <div className="sm:hidden space-y-3 p-4">
+              {movies.map((m) => (
+                <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
+                  <div className="flex gap-3">
+                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-slate-500">
+                      {m.thumbnail && (
+                        <img
+                          src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                          alt={m.title}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-medium text-sm line-clamp-2">{m.title}</span>
+                        {m.id === featuredMovieId && (
+                          <span className="inline-flex items-center rounded-full bg-gold/15 px-1.5 py-0.5 text-[10px] font-semibold text-gold whitespace-nowrap">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-muted-foreground">{m.release_year || m.category_name}</div>
+                      <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">
+                        <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{formatDate(m.created_at)}</span>
+                    <span>{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</span>
+                  </div>
+                  <div className="relative">
+                    <button
+                      onClick={() => setMenuId(menuId === m.id ? null : m.id)}
+                      className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted w-full justify-center"
+                    >
+                      Actions <MoreHorizontal className="h-4 w-4" />
+                    </button>
+                    {menuId === m.id && (
+                      <div className="absolute left-0 right-0 top-10 z-10 rounded-lg border border-border bg-card p-1 shadow-lg">
+                        {m.id !== featuredMovieId && (
+                          <button
+                            onClick={() => handleSetFeatured(m.id)}
+                            className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm text-gold hover:bg-muted"
+                          >
+                            Set as Featured <Star className="h-4 w-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            setEditingMovie(m);
+                            setMenuId(null);
+                          }}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm hover:bg-muted"
+                        >
+                          Edit Movie <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(m.id)}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm text-destructive hover:bg-muted"
+                        >
+                          Delete Movie <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
       </div>
 
-      {/* Add modal */}
       <AddMovieModal
         open={addOpen}
         onClose={() => setAddOpen(false)}
         onAdd={handleSaved}
       />
 
-      {/* Edit modal */}
       <AddMovieModal
         open={!!editingMovie}
         onClose={() => setEditingMovie(null)}

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film } from "lucide-react";
+import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film, Menu } from "lucide-react";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { getStoredUser, logoutAndRedirect, API_BASE, getAccessToken } from "@/lib/auth";
 import logo from "@/assets/logo.png";
@@ -34,7 +34,12 @@ function notifIcon(title: string) {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export function Topbar() {
+interface TopbarProps {
+  isMobile?: boolean;
+  onToggleMobileMenu?: () => void;
+}
+
+export function Topbar({ isMobile = false, onToggleMobileMenu }: TopbarProps) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,9 +124,18 @@ export function Topbar() {
   const handleLogout = () => logoutAndRedirect(router.navigate);
 
   return (
-    <div className="relative z-40 mb-4 flex items-center justify-between gap-4 rounded-2xl bg-card px-6 py-4 shadow-sm">
+    <div className={`relative z-40 mb-4 flex items-center justify-between gap-3 rounded-2xl bg-card px-4 py-3 shadow-sm md:px-6 md:py-4`}>
+      {isMobile && (
+        <button
+          onClick={onToggleMobileMenu}
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      )}
       {/* Search */}
-      <div className="relative flex-1 max-w-xl">
+      <div className={`relative flex-1 max-w-xl ${isMobile ? "hidden sm:block" : ""}`}>
         <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
@@ -130,7 +144,7 @@ export function Topbar() {
         />
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 md:gap-4">
 
         {/* Notification bell */}
         <div className="relative" ref={bellRef}>
@@ -148,7 +162,7 @@ export function Topbar() {
 
           {/* Notification dropdown */}
           {bellOpen && (
-            <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-80 rounded-2xl border border-border bg-card shadow-xl overflow-hidden">
+            <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-border bg-card shadow-xl overflow-hidden">
               {/* Header */}
               <div className="flex items-center justify-between border-b border-border px-4 py-3">
                 <span className="text-sm font-semibold">Notifications</span>

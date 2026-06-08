@@ -105,7 +105,10 @@ function Dashboard() {
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.6fr_1fr]">
         {/* Movies table */}
         <div className="rounded-2xl bg-card shadow-sm">
-          <div className="grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
+          <div className="border-b border-border px-5 py-4 sm:px-6">
+            <h2 className="text-sm font-semibold">Recent Movies</h2>
+          </div>
+          <div className={`border-b border-border px-6 py-4 text-sm font-semibold hidden sm:grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] gap-4`}>
             <div />
             <div>Movie Title</div>
             <div>Date Added</div>
@@ -113,14 +116,14 @@ function Dashboard() {
             <div>Sub Type</div>
           </div>
           {loadingMovies ? (
-            <div className="space-y-3 p-6">
+            <div className="space-y-3 p-4 sm:p-6">
               {[1, 2, 3].map((i) => <div key={i} className="h-14 animate-pulse rounded-xl bg-muted" />)}
             </div>
           ) : movies.length === 0 ? (
             <div className="py-12 text-center text-sm text-muted-foreground">No movies yet.</div>
           ) : (
             movies.map((m) => (
-              <div key={m.id} className="grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] items-center gap-4 border-b border-border px-6 py-4 last:border-0">
+              <div key={m.id} className={`hidden sm:grid grid-cols-[80px_1.4fr_1fr_1fr_0.8fr] items-center gap-4 border-b border-border px-6 py-4 last:border-0`}>
                 <div className="h-14 w-14 overflow-hidden rounded-md bg-slate-500">
                   {m.thumbnail && (
                     <img
@@ -143,6 +146,35 @@ function Dashboard() {
                 <div className="text-sm">{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
               </div>
             ))
+          )}
+          {/* Mobile cards */}
+          {!loadingMovies && movies.length > 0 && (
+            <div className="sm:hidden space-y-3 p-4">
+              {movies.map((m) => (
+                <div key={m.id} className="rounded-xl border border-border p-3 space-y-2">
+                  <div className="flex gap-3">
+                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-slate-500">
+                      {m.thumbnail && (
+                        <img
+                          src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                          alt={m.title}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm line-clamp-2">{m.title}</div>
+                      <div className="text-xs text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">{formatDate(m.created_at)}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">Active</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{m.access_level === "PREMIUM" ? "Premium" : "Basic"}</div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 

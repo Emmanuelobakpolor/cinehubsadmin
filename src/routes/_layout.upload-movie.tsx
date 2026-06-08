@@ -40,14 +40,14 @@ function UploadMoviePage() {
     <>
       <div className="space-y-6">
         {/* Page header */}
-        <div className="flex items-center justify-between rounded-2xl bg-card px-6 py-5 shadow-sm">
+        <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm md:flex-row md:items-center md:justify-between md:px-6 md:py-5">
           <div>
-            <h1 className="text-xl font-bold">Upload Movie</h1>
+            <h1 className="text-xl font-bold md:text-2xl">Upload Movie</h1>
             <p className="text-sm text-muted-foreground">Add a new movie to the Cinehubs catalog</p>
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90 active:scale-[0.98]"
           >
             <Upload className="h-4 w-4" />
             Upload Movie

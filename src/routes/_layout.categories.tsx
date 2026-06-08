@@ -119,14 +119,14 @@ function CategoriesPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-2xl bg-card px-6 py-5 shadow-sm">
+      <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <div>
-          <h1 className="text-2xl font-bold">Categories</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">Categories</h1>
           <p className="text-sm text-muted-foreground">Manage movie categories</p>
         </div>
         <button
           onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gold/90"
         >
           <Plus className="h-4 w-4" /> Add Category
         </button>
@@ -159,52 +159,88 @@ function CategoriesPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-[1fr_120px] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
+            {/* Desktop header */}
+            <div className="hidden sm:grid grid-cols-[1fr_120px] gap-4 border-b border-border px-6 py-4 text-sm font-semibold">
               <div>Category Name</div>
               <div>Action</div>
             </div>
-            {categories.map((cat) => (
-              <div
-                key={cat.id}
-                className="grid grid-cols-[1fr_120px] items-center gap-4 border-b border-border px-6 py-4 last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10">
-                    <Tags className="h-5 w-5 text-gold" />
-                  </div>
-                  <span className="font-medium">{cat.name}</span>
-                </div>
 
-                <div className="relative">
-                  <button
-                    onClick={() => setMenuId(menuId === cat.id ? null : cat.id)}
-                    className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                  {menuId === cat.id && (
-                    <div className="absolute right-0 top-9 z-10 w-32 rounded-lg border border-border bg-card p-1 shadow-lg">
-                      <button
-                        onClick={() => {
-                          setEditingCategory(cat);
-                          setNewName(cat.name);
-                          setMenuId(null);
-                        }}
-                        className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
-                      >
-                        Edit <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(cat.id)}
-                        className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
-                      >
-                        Delete <Trash2 className="h-4 w-4" />
-                      </button>
+            {/* Desktop rows */}
+            <div className="hidden sm:block">
+              {categories.map((cat) => (
+                <div
+                  key={cat.id}
+                  className="grid grid-cols-[1fr_120px] items-center gap-4 border-b border-border px-6 py-4 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10">
+                      <Tags className="h-5 w-5 text-gold" />
                     </div>
-                  )}
+                    <span className="font-medium">{cat.name}</span>
+                  </div>
+
+                  <div className="relative">
+                    <button
+                      onClick={() => setMenuId(menuId === cat.id ? null : cat.id)}
+                      className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    {menuId === cat.id && (
+                      <div className="absolute right-0 top-9 z-10 w-32 rounded-lg border border-border bg-card p-1 shadow-lg">
+                        <button
+                          onClick={() => {
+                            setEditingCategory(cat);
+                            setNewName(cat.name);
+                            setMenuId(null);
+                          }}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
+                        >
+                          Edit <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(cat.id)}
+                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
+                        >
+                          Delete <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Mobile cards */}
+            <div className="sm:hidden space-y-3 p-4">
+              {categories.map((cat) => (
+                <div key={cat.id} className="rounded-xl border border-border p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10">
+                      <Tags className="h-5 w-5 text-gold" />
+                    </div>
+                    <span className="font-medium flex-1">{cat.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingCategory(cat);
+                        setNewName(cat.name);
+                      }}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+                    >
+                      <Pencil className="h-4 w-4" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cat.id)}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-destructive/30 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/8 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" /> Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
       </div>
@@ -217,9 +253,9 @@ function CategoriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-2xl"
+            className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl bg-card shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6 sm:py-4">
               <div>
                 <h2 className="text-lg font-bold">Add New Category</h2>
                 <p className="text-xs text-muted-foreground">Create a new movie category</p>
@@ -232,7 +268,7 @@ function CategoriesPage() {
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-5 sm:p-6">
               <label className="mb-1.5 block text-sm font-medium">Category Name</label>
               <input
                 value={newName}
@@ -247,7 +283,7 @@ function CategoriesPage() {
               )}
             </div>
 
-            <div className="border-t border-border px-6 py-4">
+            <div className="border-t border-border px-5 py-4 sm:px-6 sm:py-4">
               <button
                 onClick={handleAdd}
                 disabled={saving}
@@ -268,9 +304,9 @@ function CategoriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-2xl"
+            className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl bg-card shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6 sm:py-4">
               <div>
                 <h2 className="text-lg font-bold">Edit Category</h2>
                 <p className="text-xs text-muted-foreground">Update the category name</p>
@@ -283,7 +319,7 @@ function CategoriesPage() {
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-5 sm:p-6">
               <label className="mb-1.5 block text-sm font-medium">Category Name</label>
               <input
                 value={newName}
@@ -298,7 +334,7 @@ function CategoriesPage() {
               )}
             </div>
 
-            <div className="border-t border-border px-6 py-4">
+            <div className="border-t border-border px-5 py-4 sm:px-6 sm:py-4">
               <button
                 onClick={handleEdit}
                 disabled={saving}

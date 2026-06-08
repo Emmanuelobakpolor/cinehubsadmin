@@ -231,9 +231,9 @@ export function AddMovieModal({
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
 
           {/* Upload zones */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Video upload */}
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gold/50 bg-gold/5 p-6 text-center transition-colors hover:border-gold hover:bg-gold/10">
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gold/50 bg-gold/5 p-4 sm:p-6 text-center transition-colors hover:border-gold hover:bg-gold/10">
               <Upload className="h-8 w-8 text-gold" />
               <p className="text-sm font-medium">
                 {videoFile ? videoFile.name : isEdit ? "Replace video (optional)" : "Drop video file here"}
@@ -251,7 +251,7 @@ export function AddMovieModal({
             </label>
 
             {/* Poster upload */}
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 p-6 text-center transition-colors hover:border-gold hover:bg-gold/5">
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 p-4 sm:p-6 text-center transition-colors hover:border-gold hover:bg-gold/5">
               <ImageIcon className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm font-medium">
                 {posterFile ? posterFile.name : isEdit ? "Replace poster (optional)" : "Movie Poster"}
@@ -270,7 +270,7 @@ export function AddMovieModal({
           </div>
 
           {/* Title + Synopsis */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium">Movie Title</label>
               <input
@@ -293,7 +293,7 @@ export function AddMovieModal({
           </div>
 
           {/* Basic info */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium">Release Year</label>
               <input
@@ -403,7 +403,7 @@ export function AddMovieModal({
             <label className="mb-2 block text-sm font-medium">Cast & Roles</label>
             <div className="space-y-2">
               {cast.map((c, i) => (
-                <div key={i} className="grid grid-cols-2 gap-3">
+                <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     value={c.name}
                     onChange={(e) =>
