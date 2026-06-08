@@ -119,8 +119,8 @@ function CategoriesPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
-        <div>
+      <div className="flex flex-col gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+        <div className="min-w-0">
           <h1 className="text-xl font-bold sm:text-2xl">Categories</h1>
           <p className="text-sm text-muted-foreground">Manage movie categories</p>
         </div>
@@ -132,7 +132,7 @@ function CategoriesPage() {
         </button>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-card shadow-sm">
+      <div className="mt-6 min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
         {loading ? (
           <div className="space-y-4 p-6">
             {[1, 2, 3].map((i) => (
@@ -212,14 +212,14 @@ function CategoriesPage() {
             </div>
 
             {/* Mobile cards */}
-            <div className="sm:hidden space-y-3 p-4">
+            <div className="space-y-3 p-4 sm:hidden">
               {categories.map((cat) => (
                 <div key={cat.id} className="rounded-xl border border-border p-4 space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10">
                       <Tags className="h-5 w-5 text-gold" />
                     </div>
-                    <span className="font-medium flex-1">{cat.name}</span>
+                    <span className="min-w-0 flex-1 break-words font-medium">{cat.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
