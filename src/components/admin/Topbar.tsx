@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film, Menu } from "lucide-react";
+import { Bell, Search, LogOut, ChevronDown, Star, CreditCard, Film } from "lucide-react";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { getStoredUser, logoutAndRedirect, API_BASE, getAccessToken } from "@/lib/auth";
 import logo from "@/assets/logo.png";
@@ -34,11 +34,7 @@ function notifIcon(title: string) {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-interface TopbarProps {
-  onToggleMobileMenu?: () => void;
-}
-
-export function Topbar({ onToggleMobileMenu }: TopbarProps) {
+export function Topbar() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -127,14 +123,6 @@ export function Topbar({ onToggleMobileMenu }: TopbarProps) {
       <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
         {/* Left: menu + search */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          <button
-            onClick={onToggleMobileMenu}
-            className="md:hidden grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-card hover:bg-muted transition-colors"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-
           {/* Logo visible on mobile only */}
           <img src={logo} alt="CineHubs" className="md:hidden h-8 w-8 shrink-0 rounded-lg object-cover" />
 
