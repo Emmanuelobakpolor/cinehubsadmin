@@ -32,11 +32,21 @@ function notifIcon(title: string) {
   return <Film className="h-4 w-4 text-blue-400 shrink-0 mt-0.5" />;
 }
 
+const PAGE_NAMES: Record<string, string> = {
+  "/dashboard": "Dashboard",
+  "/upload-movie": "Upload",
+  "/movies": "Movies",
+  "/categories": "Categories",
+  "/subscribers": "Subscribers",
+  "/broadcast": "Broadcast",
+};
+
 // ── Component ──────────────────────────────────────────────────────────────
 
 export function Topbar() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pageName = PAGE_NAMES[pathname] ?? "Dashboard";
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const adminUser = getStoredUser();
@@ -123,8 +133,9 @@ export function Topbar() {
       <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
         {/* Left: menu + search */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          {/* Logo visible on mobile only */}
+          {/* Logo + page name visible on mobile only */}
           <img src={logo} alt="CineHubs" className="md:hidden h-8 w-8 shrink-0 rounded-lg object-cover" />
+          <span className="md:hidden text-sm font-semibold truncate">{pageName}</span>
 
           <div className="relative hidden min-w-0 flex-1 sm:block sm:max-w-xl lg:max-w-2xl">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -237,17 +248,6 @@ export function Topbar() {
         </div>
       </div>
 
-      {/* Mobile search row */}
-      <div className="mt-2 sm:hidden">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full rounded-full border border-border bg-background py-2.5 pl-10 pr-4 text-sm outline-none focus:border-gold"
-          />
-        </div>
-      </div>
     </div>
   );
 }

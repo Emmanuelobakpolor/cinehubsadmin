@@ -7,7 +7,7 @@ import { logoutAndRedirect } from "@/lib/auth";
 const navGroups = [
   {
     label: "MAIN",
-    items: [{ to: "/", label: "Dashboard", icon: LayoutGrid }],
+    items: [{ to: "/dashboard", label: "Dashboard", icon: LayoutGrid }],
   },
   {
     label: "CONTENT",

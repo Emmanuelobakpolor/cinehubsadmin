@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { LayoutGrid, Package, Film, Tags, Users, Radio } from "lucide-react";
 
 const navItems = [
-  { to: "/", label: "Home", icon: LayoutGrid },
+  { to: "/dashboard", label: "Home", icon: LayoutGrid },
   { to: "/upload-movie", label: "Upload", icon: Package },
   { to: "/movies", label: "Movies", icon: Film },
   { to: "/categories", label: "Tags", icon: Tags },

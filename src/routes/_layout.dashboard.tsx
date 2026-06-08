@@ -72,7 +72,7 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="min-w-0 overflow-hidden rounded-2xl bg-card p-3 shadow-sm sm:p-4 md:p-5">
             <div className="flex items-start gap-2 sm:gap-3">
@@ -80,21 +80,21 @@ function Dashboard() {
                 <s.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[11px] leading-tight text-muted-foreground sm:text-sm">{s.label}</div>
+                <div className="text-[10px] leading-tight text-muted-foreground sm:text-sm">{s.label}</div>
                 <div className="mt-0.5 text-base font-bold sm:text-2xl">{s.value}</div>
               </div>
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4">
-              <button className="flex items-center gap-1 text-[11px] font-medium text-foreground/80 sm:text-sm">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-1 sm:mt-4 sm:gap-2">
+              <button className="flex items-center gap-0.5 text-[10px] font-medium text-foreground/80 sm:text-sm">
                 View All <span>›</span>
               </button>
               {s.withMonth ? (
-                <button className="flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs">
-                  Month <ChevronDown className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <button className="flex items-center gap-1 rounded-md border border-border px-1 py-0.5 text-[9px] sm:px-2 sm:py-1 sm:text-xs">
+                  Month <ChevronDown className="h-2 w-2 sm:h-3 sm:w-3" />
                 </button>
               ) : (
-                <span className="flex items-center gap-1 rounded-full bg-success-soft px-1.5 py-0.5 text-[10px] font-medium text-success sm:px-2 sm:py-1 sm:text-xs">
-                  <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> 10.0%
+                <span className="flex items-center gap-0.5 rounded-full bg-success-soft px-1.5 py-0.5 text-[9px] font-medium text-success sm:px-2 sm:py-1 sm:text-xs">
+                  <TrendingUp className="h-2 w-2 sm:h-3 sm:w-3" /> 10%
                 </span>
               )}
             </div>

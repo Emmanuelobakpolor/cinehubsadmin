@@ -88,7 +88,7 @@ function SubscribersPage() {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
         <Pill
           color="bg-sky-500"
           label="All Subscribers"
@@ -114,7 +114,7 @@ function SubscribersPage() {
         <div className="relative" ref={filterRef}>
           <button
             onClick={() => setFilterOpen((o) => !o)}
-            className={`flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium shadow-sm transition-colors ${
+            className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium shadow-sm transition-colors ${
               statusFilter !== "ALL"
                 ? "bg-primary/10 ring-2 ring-primary text-primary"
                 : "bg-card"
@@ -146,7 +146,7 @@ function SubscribersPage() {
         </div>
 
         <button
-          className="rounded-2xl border-2 border-fuchsia-400 px-5 py-2.5 text-sm font-semibold text-fuchsia-500 transition-opacity hover:opacity-80"
+          className="shrink-0 rounded-2xl border-2 border-fuchsia-400 px-5 py-2.5 text-sm font-semibold text-fuchsia-500 transition-opacity hover:opacity-80"
           onClick={() => { setPlanFilter("ALL"); setStatusFilter("ALL"); setPage(0); }}
         >
           Show all
@@ -324,7 +324,7 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`flex min-w-[110px] max-w-[calc(50%-6px)] sm:max-w-none sm:flex-1 sm:min-w-[150px] items-center gap-2 sm:gap-3 rounded-2xl px-3 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
+      className={`flex shrink-0 min-w-[110px] sm:flex-1 sm:min-w-[150px] items-center gap-2 sm:gap-3 rounded-2xl px-3 py-3 sm:px-5 sm:py-4 shadow-sm transition-colors ${
         active ? "bg-primary/10 ring-2 ring-primary" : "bg-card"
       }`}
     >
