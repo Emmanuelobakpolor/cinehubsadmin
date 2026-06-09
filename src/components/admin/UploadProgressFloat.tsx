@@ -2,9 +2,9 @@ import { CloudUpload, CheckCircle, AlertCircle, X } from "lucide-react";
 import { useUploadContext } from "@/context/UploadContext";
 
 export function UploadProgressFloat() {
-  const { phase, pct, label, error, isMinimized, dismiss } = useUploadContext();
+  const { phase, pct, label, error, dismiss } = useUploadContext();
 
-  if (!isMinimized || phase === "idle") return null;
+  if (phase === "idle") return null;
 
   return (
     <div className="fixed bottom-5 right-5 z-50 w-72 rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">

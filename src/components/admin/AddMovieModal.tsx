@@ -214,7 +214,14 @@ export function AddMovieModal({
   if (!open || minimized) return null;
 
   return (
-    <BaseModal open={open} onClose={onClose} className="!max-w-2xl p-0">
+    <BaseModal
+      open={open}
+      onClose={() => {
+        if (loading) uploadCtx.minimize();
+        onClose();
+      }}
+      className="!max-w-2xl p-0"
+    >
       <div
         className="flex h-full w-full flex-col overflow-hidden"
         style={{ animation: "fadeIn 0.2s ease-out" }}
@@ -241,7 +248,13 @@ export function AddMovieModal({
                 <Minimize2 className="h-4 w-4" />
               </TouchButton>
             )}
-            <TouchButton onClick={onClose} className="bg-transparent hover:bg-muted">
+            <TouchButton
+              onClick={() => {
+                if (loading) uploadCtx.minimize();
+                onClose();
+              }}
+              className="bg-transparent hover:bg-muted"
+            >
               <X className="h-5 w-5" />
             </TouchButton>
           </div>
