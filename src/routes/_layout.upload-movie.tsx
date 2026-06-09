@@ -18,6 +18,7 @@ function formatStorage(bytes: number): string {
 
 function UploadMoviePage() {
   const [open, setOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const [success, setSuccess] = useState(false);
   const [stats, setStats] = useState<{ total_movies: number; this_month: number; storage_bytes: number } | null>(null);
 
@@ -86,9 +87,12 @@ function UploadMoviePage() {
 
       <AddMovieModal
         open={open}
-        onClose={() => setOpen(false)}
+        minimized={minimized}
+        onMinimize={() => { setMinimized(true); setOpen(false); }}
+        onClose={() => { setOpen(false); setMinimized(false); }}
         onAdd={(_movie: Movie) => {
           setOpen(false);
+          setMinimized(false);
           setSuccess(true);
           // Refresh stats
           fetch(`${API_BASE}/movies/stats/`, {

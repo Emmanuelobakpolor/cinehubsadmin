@@ -3,6 +3,8 @@ import { Outlet, createFileRoute, useRouterState, redirect } from "@tanstack/rea
 import { Sidebar } from "@/components/admin/Sidebar";
 import { Topbar } from "@/components/admin/Topbar";
 import { isAuthenticated } from "@/lib/auth";
+import { UploadProvider } from "@/context/UploadContext";
+import { UploadProgressFloat } from "@/components/admin/UploadProgressFloat";
 
 export const Route = createFileRoute("/_layout")({
   beforeLoad: () => {
@@ -21,25 +23,27 @@ function LayoutShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
-
-      <Sidebar
-        onCollapsedChange={setCollapsed}
-        mobileOpen={mobileOpen}
-        onMobileOpenChange={setMobileOpen}
-      />
-      <main
-        className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-6 ${
-          collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
-        }`}
-      >
-        <div className="mx-auto w-full min-w-0 max-w-[1800px] px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
-          <Topbar onMenuClick={() => setMobileOpen(true)} />
-          <div key={pathname} className="page-enter min-w-0 overflow-x-hidden">
-            <Outlet />
+    <UploadProvider>
+      <div className="min-h-screen overflow-x-hidden bg-background">
+        <Sidebar
+          onCollapsedChange={setCollapsed}
+          mobileOpen={mobileOpen}
+          onMobileOpenChange={setMobileOpen}
+        />
+        <main
+          className={`main-content min-w-0 overflow-x-hidden transition-all duration-300 pb-6 ${
+            collapsed ? "md:ml-[4.5rem]" : "md:ml-64 xl:ml-72"
+          }`}
+        >
+          <div className="mx-auto w-full min-w-0 max-w-[1800px] px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 2xl:px-8">
+            <Topbar onMenuClick={() => setMobileOpen(true)} />
+            <div key={pathname} className="page-enter min-w-0 overflow-x-hidden">
+              <Outlet />
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+        <UploadProgressFloat />
+      </div>
+    </UploadProvider>
   );
 }

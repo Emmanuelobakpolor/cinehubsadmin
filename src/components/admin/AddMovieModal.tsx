@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import BaseModal from "@/components/ui/BaseModal";
 import TouchButton from "@/components/ui/TouchButton";
-import { X, Upload, ImageIcon, Check, Pencil } from "lucide-react";
+import { X, Upload, ImageIcon, Check, Pencil, Minimize2 } from "lucide-react";
 import { API_BASE, getAccessToken } from "@/lib/auth";
+import { useUploadContext } from "@/context/UploadContext";
 
 export interface Movie {
   id: number;
@@ -34,13 +35,18 @@ export function AddMovieModal({
   onClose,
   onAdd,
   editMovie,
+  minimized = false,
+  onMinimize,
 }: {
   open: boolean;
   onClose: () => void;
   onAdd: (movie: Movie) => void;
   editMovie?: Movie | null;
+  minimized?: boolean;
+  onMinimize?: () => void;
 }) {
   const isEdit = !!editMovie;
+  const uploadCtx = useUploadContext();
 
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [posterFile, setPosterFile] = useState<File | null>(null);
@@ -143,6 +149,7 @@ export function AddMovieModal({
 
     setLoading(true);
     setUploadPct(0);
+    uploadCtx.notifyStart(title.trim() || "Movie");
 
     await new Promise<void>((resolve) => {
       const xhr = new XMLHttpRequest();
@@ -150,12 +157,17 @@ export function AddMovieModal({
       // Track the browser→server file transfer (phase 1)
       xhr.upload.addEventListener("progress", (e) => {
         if (e.lengthComputable) {
-          setUploadPct(Math.round((e.loaded / e.total) * 100));
+          const pct = Math.round((e.loaded / e.total) * 100);
+          setUploadPct(pct);
+          uploadCtx.notifyProgress(pct);
         }
       });
 
       // File fully received by Django — now it's uploading to Cloudinary (phase 2)
-      xhr.upload.addEventListener("loadend", () => setUploadPct(101));
+      xhr.upload.addEventListener("loadend", () => {
+        setUploadPct(101);
+        uploadCtx.notifyProcessing();
+      });
 
       xhr.addEventListener("load", () => {
         setLoading(false);
@@ -165,11 +177,14 @@ export function AddMovieModal({
           if (xhr.status < 200 || xhr.status >= 300) {
             const msg = Object.values(data).flat().join(" ") || "Something went wrong.";
             setError(String(msg));
+            uploadCtx.notifyError(String(msg));
           } else {
+            uploadCtx.notifyDone();
             onAdd(data as Movie);
           }
         } catch {
           setError("Unexpected response from server.");
+          uploadCtx.notifyError("Unexpected response from server.");
         }
         resolve();
       });
@@ -178,6 +193,7 @@ export function AddMovieModal({
         setLoading(false);
         setUploadPct(null);
         setError("Could not connect to the server.");
+        uploadCtx.notifyError("Could not connect to the server.");
         resolve();
       });
 
@@ -185,6 +201,7 @@ export function AddMovieModal({
         setLoading(false);
         setUploadPct(null);
         setError("Upload was cancelled.");
+        uploadCtx.notifyError("Upload was cancelled.");
         resolve();
       });
 
@@ -194,7 +211,7 @@ export function AddMovieModal({
     });
   };
 
-  if (!open) return null;
+  if (!open || minimized) return null;
 
   return (
     <BaseModal open={open} onClose={onClose} className="!max-w-2xl p-0">
@@ -214,9 +231,20 @@ export function AddMovieModal({
                 : "Upload a movie to the Cinehubs platform"}
             </p>
           </div>
-          <TouchButton onClick={onClose} className="shrink-0 bg-transparent hover:bg-muted">
-            <X className="h-5 w-5" />
-          </TouchButton>
+          <div className="flex items-center gap-1 shrink-0">
+            {loading && onMinimize && (
+              <TouchButton
+                onClick={() => { uploadCtx.minimize(); onMinimize(); }}
+                className="bg-transparent hover:bg-muted"
+                title="Minimize — upload continues in background"
+              >
+                <Minimize2 className="h-4 w-4" />
+              </TouchButton>
+            )}
+            <TouchButton onClick={onClose} className="bg-transparent hover:bg-muted">
+              <X className="h-5 w-5" />
+            </TouchButton>
+          </div>
         </div>
 
         {/* Scrollable body */}
