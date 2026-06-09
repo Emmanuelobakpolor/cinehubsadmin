@@ -3,11 +3,15 @@ import { ImageIcon, BadgeCheck } from "lucide-react";
 export function SuccessModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-foreground/40 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center bg-foreground/40 sm:p-4" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-card p-5 text-center shadow-xl sm:p-8"
+        className="modal-sheet w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-card p-5 text-center shadow-xl sm:p-8"
       >
+        {/* Drag handle — mobile only */}
+        <div className="sm:hidden flex justify-center -mt-1 mb-3">
+          <div className="h-1 w-10 rounded-full bg-border" />
+        </div>
         <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-fuchsia-50 sm:h-24 sm:w-24">
           <div className="relative">
             <ImageIcon className="h-10 w-10 text-fuchsia-900 sm:h-12 sm:w-12" />

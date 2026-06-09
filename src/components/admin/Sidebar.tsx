@@ -66,7 +66,7 @@ export function Sidebar({ onCollapsedChange, mobileOpen, onMobileOpenChange }: S
     <>
       {/* Mobile Backdrop — always rendered, fades in/out */}
       <div
-        className={`fixed inset-0 z-20 bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
           isMobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setMobileOpen(false)}
@@ -75,7 +75,7 @@ export function Sidebar({ onCollapsedChange, mobileOpen, onMobileOpenChange }: S
 
       <aside
         className={[
-          "fixed left-0 top-0 z-30 h-screen w-72 flex flex-col",
+          "fixed left-0 top-0 z-50 h-screen w-72 flex flex-col",
           "border-r border-white/10 bg-sidebar text-sidebar-foreground",
           "transition-all duration-300 ease-out will-change-transform",
           // Mutually exclusive classes — no Tailwind conflict

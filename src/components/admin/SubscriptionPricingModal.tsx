@@ -50,13 +50,17 @@ export function SubscriptionPricingModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] grid place-items-center bg-foreground/40 p-4"
+      className="fixed inset-0 z-[9999] flex items-end sm:items-center sm:justify-center bg-foreground/40 sm:p-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-card p-5 shadow-xl sm:p-8"
+        className="modal-sheet w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-card p-5 shadow-xl sm:p-8 overflow-y-auto max-h-[90vh]"
       >
+        {/* Drag handle — mobile only */}
+        <div className="sm:hidden flex justify-center -mt-1 mb-3">
+          <div className="h-1 w-10 rounded-full bg-border" />
+        </div>
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-xl font-bold">Subscription Pricing</h2>
