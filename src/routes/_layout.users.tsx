@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Users, X, Phone, Mail, ShoppingCart, CheckCircle, XCircle, Shield } from "lucide-react";
+import { Users, X, Phone, Mail, ShoppingCart, CheckCircle, XCircle, Shield, Trash2 } from "lucide-react";
 import { API_BASE, getAccessToken } from "@/lib/auth";
 import { createPortal } from "react-dom";
 
@@ -279,17 +279,59 @@ function UsersPage() {
       </div>
 
       {/* User detail modal */}
-      {selected && <UserDetailModal user={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        <UserDetailModal
+          user={selected}
+          onClose={() => setSelected(null)}
+          onDeleted={(id) => {
+            setUsers((prev) => prev.filter((u) => u.id !== id));
+            setCount((c) => Math.max(0, c - 1));
+            setSelected(null);
+          }}
+        />
+      )}
     </>
   );
 }
 
-function UserDetailModal({ user, onClose }: { user: AdminUser; onClose: () => void }) {
+function UserDetailModal({
+  user,
+  onClose,
+  onDeleted,
+}: {
+  user: AdminUser;
+  onClose: () => void;
+  onDeleted: (id: number) => void;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   useEffect(() => {
     const handle = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handle);
     return () => document.removeEventListener("keydown", handle);
   }, [onClose]);
+
+  async function handleDelete() {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`${API_BASE}/users/${user.id}/delete/`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getAccessToken()}` },
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Failed to delete user.");
+      }
+      onDeleted(user.id);
+    } catch (e: any) {
+      setDeleteError(e.message ?? "Something went wrong.");
+      setDeleting(false);
+      setConfirming(false);
+    }
+  }
 
   return createPortal(
     <div
@@ -366,7 +408,7 @@ function UserDetailModal({ user, onClose }: { user: AdminUser; onClose: () => vo
           </div>
 
           {/* Subscription block */}
-          <div className="mx-5 mb-5 rounded-xl border border-border p-4">
+          <div className="mx-5 mb-4 rounded-xl border border-border p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">Subscription</p>
             {user.subscription ? (
               <div className="space-y-2">
@@ -398,6 +440,44 @@ function UserDetailModal({ user, onClose }: { user: AdminUser; onClose: () => vo
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">No active subscription</p>
+            )}
+          </div>
+
+          {/* Delete zone */}
+          <div className="mx-5 mb-5">
+            {deleteError && (
+              <p className="mb-2 rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-600">{deleteError}</p>
+            )}
+            {!confirming ? (
+              <button
+                onClick={() => setConfirming(true)}
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-500/40 py-2.5 text-sm font-medium text-rose-500 transition-colors hover:bg-rose-500/10 active:scale-[0.98]"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete User
+              </button>
+            ) : (
+              <div className="rounded-xl border border-rose-500/40 bg-rose-500/5 p-4 space-y-3">
+                <p className="text-sm font-medium text-rose-600">
+                  Delete <span className="font-bold">{user.full_name}</span>? This cannot be undone.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setConfirming(false); setDeleteError(null); }}
+                    disabled={deleting}
+                    className="flex-1 rounded-lg border border-border py-2 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="flex-1 rounded-lg bg-rose-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-rose-600 disabled:opacity-60 active:scale-[0.98]"
+                  >
+                    {deleting ? "Deleting…" : "Yes, Delete"}
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

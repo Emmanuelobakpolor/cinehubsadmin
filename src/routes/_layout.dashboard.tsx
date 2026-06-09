@@ -67,7 +67,7 @@ function Dashboard() {
   }, []);
 
   const stats = [
-    { label: "Total Users", value: loadingStats ? "—" : String(userStats.total_users), icon: Users, color: "bg-gold text-white", link: "/subscribers" },
+    { label: "Total Users", value: loadingStats ? "—" : String(userStats.total_users), icon: Users, color: "bg-gold text-white", link: "/users" },
     { label: "Basic Subs", value: loadingStats ? "—" : String(userStats.basic_subs), icon: Star, color: "bg-emerald-500 text-white", link: "/subscribers" },
     { label: "Premium Subs", value: loadingStats ? "—" : String(userStats.premium_subs), icon: Star, color: "bg-sky-500 text-white", link: "/subscribers" },
     { label: "Total Movies", value: loadingStats ? "—" : String(movieStats.total_movies), icon: Film, color: "bg-amber-300 text-white", withMonth: true, link: "/movies" },
