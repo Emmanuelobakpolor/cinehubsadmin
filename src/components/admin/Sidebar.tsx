@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
-import { LayoutGrid, Package, Users, Radio, ChevronLeft, Film, LogOut, Tags, X, Settings } from "lucide-react";
+import { LayoutGrid, Package, Users, Radio, ChevronLeft, Film, LogOut, Tags, X, Settings, CreditCard } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { logoutAndRedirect } from "@/lib/auth";
 
@@ -20,7 +20,8 @@ const navGroups = [
   {
     label: "COMMUNICATE",
     items: [
-      { to: "/subscribers", label: "Subscribers", icon: Users },
+      { to: "/users", label: "Users", icon: Users },
+      { to: "/subscribers", label: "Subscribers", icon: CreditCard },
       { to: "/broadcast", label: "Broadcast", icon: Radio },
     ],
   },

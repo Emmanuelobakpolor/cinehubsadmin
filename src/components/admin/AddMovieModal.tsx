@@ -20,6 +20,7 @@ export interface Movie {
   rating: string;
   director: string;
   views_count: number;
+  purchase_count: number;
   is_trending: boolean;
   is_featured: boolean;
   created_at: string;

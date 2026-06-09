@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus } from "lucide-react";
+import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus, ShoppingCart } from "lucide-react";
 import { AddMovieModal, type Movie } from "@/components/admin/AddMovieModal";
 import { SuccessModal } from "@/components/admin/SuccessModal";
 import { API_BASE, getAccessToken } from "@/lib/auth";
@@ -148,7 +148,12 @@ function MoviesPage() {
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-sm text-muted-foreground">{m.release_year || m.category_names?.[0] || ""}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                        <ShoppingCart className="h-3 w-3" /> {m.purchase_count ?? 0} bought
+                      </span>
+                    </div>
                   </div>
 
                   <div>
@@ -228,10 +233,8 @@ function MoviesPage() {
                         <span className="inline-flex items-center gap-0.5 rounded-full bg-success-soft px-2 py-0.5 text-[10px] sm:text-[11px] font-medium text-success">
                           <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-success" /> Active
                         </span>
-                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] sm:text-[11px] font-medium ${
-                          (m as any).access_level === "PREMIUM" ? "bg-sky-500/10 text-sky-600" : "bg-emerald-500/10 text-emerald-600"
-                        }`}>
-                          {(m as any).access_level === "PREMIUM" ? "Premium" : "Basic"}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] sm:text-[11px] font-medium text-muted-foreground">
+                          <ShoppingCart className="h-2.5 w-2.5" /> {m.purchase_count ?? 0} bought
                         </span>
                       </div>
                     </div>
