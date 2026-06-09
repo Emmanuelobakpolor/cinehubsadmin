@@ -48,15 +48,18 @@ function SubscribersPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
 
+  // Close dropdown on outside click
   useEffect(() => {
     function handle(e: MouseEvent) {
-      if (filterRef.current && !filterRef.current.contains(e.target as Node))
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
         setFilterOpen(false);
+      }
     }
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
 
+  // Fetch data
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -72,7 +75,7 @@ function SubscribersPage() {
         setSubscribers(Array.isArray(data.results) ? data.results : []);
         setPage(0);
       })
-      .catch(() => {})
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, [planFilter, statusFilter]);
 
@@ -80,67 +83,84 @@ function SubscribersPage() {
   const totalPages = Math.max(1, Math.ceil(subscribers.length / PAGE_SIZE));
 
   return (
-    <>
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card px-4 py-4 shadow-sm sm:px-6 sm:py-5">
-        <div className="min-w-0">
-          <h1 className="text-xl font-bold sm:text-2xl">Subscribers</h1>
-          <p className="text-sm text-muted-foreground">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 rounded-2xl bg-card px-6 py-5 shadow-sm">
+        <div>
+          <h1 className="text-2xl font-bold">Subscribers</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             {loading ? "Loading…" : `${counts.total} total subscribers`}
           </p>
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3">
         <Pill
           color="bg-sky-500"
           label="All Subscribers"
           value={String(counts.total)}
           active={planFilter === "ALL"}
-          onClick={() => { setPlanFilter("ALL"); setPage(0); }}
+          onClick={() => {
+            setPlanFilter("ALL");
+            setPage(0);
+          }}
         />
         <Pill
           color="bg-gold"
           label="Basic"
           value={String(counts.basic)}
           active={planFilter === "BASIC"}
-          onClick={() => { setPlanFilter("BASIC"); setPage(0); }}
+          onClick={() => {
+            setPlanFilter("BASIC");
+            setPage(0);
+          }}
         />
         <Pill
           color="bg-rose-500"
           label="Premium"
           value={String(counts.premium)}
           active={planFilter === "PREMIUM"}
-          onClick={() => { setPlanFilter("PREMIUM"); setPage(0); }}
+          onClick={() => {
+            setPlanFilter("PREMIUM");
+            setPage(0);
+          }}
         />
-        {/* Status filter dropdown */}
-        <div className="relative" ref={filterRef}>
+
+        {/* Status Filter */}
+        <div className="relative ml-auto sm:ml-0" ref={filterRef}>
           <button
             onClick={() => setFilterOpen((o) => !o)}
-            className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium shadow-sm transition-colors ${
+            className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-medium shadow-sm transition-all border ${
               statusFilter !== "ALL"
-                ? "bg-primary/10 ring-2 ring-primary text-primary"
-                : "bg-card"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-card hover:bg-muted"
             }`}
           >
             <Filter className="h-4 w-4" />
-            {statusFilter === "ALL" ? "Filters" : statusFilter.charAt(0) + statusFilter.slice(1).toLowerCase()}
-            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filterOpen ? "rotate-180" : ""}`} />
+            {statusFilter === "ALL" ? "All Statuses" : statusFilter}
+            <ChevronDown className={`h-4 w-4 transition-transform ${filterOpen ? "rotate-180" : ""}`} />
           </button>
+
           {filterOpen && (
-            <div className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[160px] rounded-xl border border-border bg-card py-1.5 shadow-lg">
+            <div className="absolute right-0 sm:left-0 top-[calc(100%+6px)] z-50 w-48 rounded-xl border border-border bg-card py-1 shadow-xl">
               {(["ALL", "ACTIVE", "EXPIRED", "CANCELLED"] as StatusFilter[]).map((s) => (
                 <button
                   key={s}
-                  onClick={() => { setStatusFilter(s); setFilterOpen(false); setPage(0); }}
-                  className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-muted ${
-                    statusFilter === s ? "font-semibold text-primary" : ""
+                  onClick={() => {
+                    setStatusFilter(s);
+                    setFilterOpen(false);
+                    setPage(0);
+                  }}
+                  className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors ${
+                    statusFilter === s ? "bg-muted font-medium" : ""
                   }`}
                 >
-                  {s === "ACTIVE" && <span className="h-2 w-2 rounded-full bg-green-500" />}
-                  {s === "EXPIRED" && <span className="h-2 w-2 rounded-full bg-rose-500" />}
-                  {s === "CANCELLED" && <span className="h-2 w-2 rounded-full bg-gray-400" />}
-                  {s === "ALL" && <span className="h-2 w-2 rounded-full bg-sky-400" />}
-                  {s === "ALL" ? "All statuses" : s.charAt(0) + s.slice(1).toLowerCase()}
+                  {s === "ACTIVE" && <span className="h-2.5 w-2.5 rounded-full bg-green-500" />}
+                  {s === "EXPIRED" && <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />}
+                  {s === "CANCELLED" && <span className="h-2.5 w-2.5 rounded-full bg-gray-400" />}
+                  {s === "ALL" && <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />}
+                  {s === "ALL" ? "All Statuses" : s}
                 </button>
               ))}
             </div>
@@ -148,65 +168,63 @@ function SubscribersPage() {
         </div>
 
         <button
-          className="shrink-0 rounded-2xl border-2 border-fuchsia-400 px-5 py-2.5 text-sm font-semibold text-fuchsia-500 transition-opacity hover:opacity-80"
-          onClick={() => { setPlanFilter("ALL"); setStatusFilter("ALL"); setPage(0); }}
+          className="rounded-2xl border-2 border-fuchsia-400 px-6 py-3 text-sm font-semibold text-fuchsia-500 hover:bg-fuchsia-50 transition-colors"
+          onClick={() => {
+            setPlanFilter("ALL");
+            setStatusFilter("ALL");
+            setPage(0);
+          }}
         >
-          Show all
+          Reset Filters
         </button>
-        </div>
+      </div>
 
-      <div className="mt-6 rounded-2xl bg-card shadow-sm overflow-hidden">
+      {/* Subscribers Table / Cards */}
+      <div className="rounded-2xl bg-card shadow-sm overflow-hidden border border-border">
         {loading ? (
-          <>
-            <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-3 animate-pulse">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-muted" />
-                <div className="space-y-1">
-                  <div className="h-3 w-28 rounded bg-muted" />
-                  <div className="h-2.5 w-36 rounded bg-muted" />
-                </div>
-              </div>
-              <div className="h-6 w-16 rounded-full bg-muted" />
-              <div className="h-6 w-16 rounded-full bg-muted" />
-              <div className="h-3 w-20 rounded bg-muted" />
-              <div className="h-3 w-20 rounded bg-muted" />
-            </div>
+          <div className="p-6 space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="sm:hidden border-b border-border p-4 space-y-3 animate-pulse">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-muted" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-3 w-24 rounded bg-muted" />
-                    <div className="h-2.5 w-36 rounded bg-muted" />
-                  </div>
+              <div key={i} className="animate-pulse flex items-center gap-4 py-3">
+                <div className="h-12 w-12 rounded-full bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-48 rounded bg-muted" />
+                  <div className="h-3 w-64 rounded bg-muted" />
                 </div>
-                <div className="flex gap-2">
-                  <div className="h-6 w-16 rounded-full bg-muted" />
-                  <div className="h-6 w-20 rounded-full bg-muted" />
-                </div>
+                <div className="h-8 w-20 rounded-full bg-muted" />
               </div>
             ))}
-          </>
+          </div>
         ) : paginated.length === 0 ? (
-          <div className="px-6 py-10 text-center text-sm text-muted-foreground">No subscribers found.</div>
+          <div className="px-6 py-16 text-center text-muted-foreground">
+            No subscribers found.
+          </div>
         ) : (
           <>
-            {/* Desktop rows */}
+            {/* Desktop Table */}
             <div className="hidden sm:block">
+              <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border bg-muted/50 px-6 py-4 text-sm font-medium text-muted-foreground">
+                <div>Subscriber</div>
+                <div>Plan</div>
+                <div>Status</div>
+                <div>Start Date</div>
+                <div>End Date</div>
+              </div>
+
               {paginated.map((r) => (
                 <div
                   key={r.id}
-                  className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-3 last:border-0"
+                  className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] items-center gap-4 border-b border-border px-6 py-4 last:border-0 hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="grid h-10 w-10 place-items-center rounded-full bg-muted font-semibold text-sm uppercase">
                       {r.username.slice(0, 2)}
                     </div>
-                    <div>
-                      <div className="font-medium">{r.username}</div>
-                      <div className="text-sm text-muted-foreground">{r.email}</div>
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{r.username}</div>
+                      <div className="text-sm text-muted-foreground truncate">{r.email}</div>
                     </div>
                   </div>
+
                   <div>
                     <span
                       className={`inline-block rounded-full px-4 py-1 text-xs font-semibold ${
@@ -218,68 +236,69 @@ function SubscribersPage() {
                       {r.plan_name}
                     </span>
                   </div>
+
                   <div>
                     {r.is_active ? (
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
-                        <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
+                        <span className="h-2 w-2 rounded-full bg-success" /> Active
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-600">
-                        <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />{" "}
+                        <span className="h-2 w-2 rounded-full bg-rose-500" />
                         {r.status === "CANCELLED" ? "Cancelled" : "Expired"}
                       </span>
                     )}
                   </div>
+
                   <div className="text-sm text-muted-foreground">{formatDate(r.start_date)}</div>
                   <div className="text-sm text-muted-foreground">{formatDate(r.end_date)}</div>
                 </div>
               ))}
             </div>
 
-            {/* Mobile cards */}
-            <div className="sm:hidden space-y-2 sm:space-y-3 p-3 sm:p-4">
+            {/* Mobile Cards */}
+            <div className="sm:hidden divide-y divide-border">
               {paginated.map((r) => (
-                <div key={r.id} className="rounded-xl sm:rounded-2xl border border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="grid h-10 w-10 sm:h-12 sm:w-12 shrink-0 place-items-center rounded-full bg-muted font-bold uppercase text-xs sm:text-sm">
+                <div key={r.id} className="p-5 space-y-4">
+                  {/* ... (mobile card remains mostly same - you can keep your previous version) */}
+                  <div className="flex items-start gap-3">
+                    <div className="grid h-12 w-12 place-items-center rounded-full bg-muted font-bold uppercase text-sm shrink-0">
                       {r.username.slice(0, 2)}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-sm truncate">{r.username}</div>
-                      <div className="text-xs text-muted-foreground truncate">{r.email}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold">{r.username}</div>
+                      <div className="text-sm text-muted-foreground truncate">{r.email}</div>
                     </div>
                     <span
-                      className={`inline-block shrink-0 rounded-full px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-semibold whitespace-nowrap ${
-                        r.plan_name === "BASIC"
-                          ? "bg-basic-soft text-basic"
-                          : "bg-premium-soft text-premium"
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+                        r.plan_name === "BASIC" ? "bg-basic-soft text-basic" : "bg-premium-soft text-premium"
                       }`}
                     >
                       {r.plan_name}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center justify-between">
                     {r.is_active ? (
-                      <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-success-soft px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium text-success">
-                        <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-success" /> Active
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-medium text-success">
+                        <span className="h-2 w-2 rounded-full bg-success" /> Active
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full bg-rose-100 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium text-rose-600">
-                        <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-rose-500" />{" "}
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-600">
+                        <span className="h-2 w-2 rounded-full bg-rose-500" />
                         {r.status === "CANCELLED" ? "Cancelled" : "Expired"}
                       </span>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 sm:gap-3 rounded-lg sm:rounded-xl bg-muted/40 px-2 sm:px-3 py-2 sm:py-2.5 text-[11px] sm:text-xs">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="block text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Started</span>
-                      <span className="mt-0.5 block text-xs sm:text-sm font-medium text-foreground">{formatDate(r.start_date)}</span>
+                      <div className="text-xs text-muted-foreground">Started</div>
+                      <div className="font-medium">{formatDate(r.start_date)}</div>
                     </div>
                     <div>
-                      <span className="block text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Expires</span>
-                      <span className="mt-0.5 block text-xs sm:text-sm font-medium text-foreground">{formatDate(r.end_date)}</span>
+                      <div className="text-xs text-muted-foreground">Expires</div>
+                      <div className="font-medium">{formatDate(r.end_date)}</div>
                     </div>
                   </div>
                 </div>
@@ -288,30 +307,36 @@ function SubscribersPage() {
           </>
         )}
 
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4">
+        {/* Pagination */}
+        <div className="flex items-center justify-between border-t border-border px-6 py-4">
           <button
-            className="rounded-lg border border-border px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium disabled:opacity-40 transition-colors hover:bg-muted"
+            className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50 transition-colors"
             disabled={page === 0}
-            onClick={() => setPage((p) => p - 1)}
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
           >
             ← Previous
           </button>
+
+          <span className="text-sm text-muted-foreground">
+            {subscribers.length > 0
+              ? `${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, subscribers.length)} of ${subscribers.length}`
+              : "0 results"}
+          </span>
+
           <button
-            className="rounded-lg border border-border px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium disabled:opacity-40 transition-colors hover:bg-muted"
+            className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50 transition-colors"
             disabled={page >= totalPages - 1}
             onClick={() => setPage((p) => p + 1)}
           >
             Next →
           </button>
-          <span className="text-xs sm:text-sm text-muted-foreground ml-auto">
-            {subscribers.length === 0 ? "0" : `${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, subscribers.length)}`} of {subscribers.length}
-          </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
+// Pill Component (slightly improved)
 function Pill({
   color,
   label,
@@ -328,17 +353,19 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`flex shrink-0 items-center gap-1 sm:gap-2 rounded-2xl px-2.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm shadow-sm transition-colors min-w-fit sm:flex-1 sm:min-w-[130px] font-semibold ${
-        active ? "bg-primary/10 ring-2 ring-primary" : "bg-card"
+      className={`flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium shadow-sm transition-all min-w-fit border ${
+        active
+          ? "bg-primary/10 border-primary text-primary"
+          : "bg-card border-border hover:bg-muted"
       }`}
     >
       <span
-        className={`grid h-4 w-4 sm:h-5 sm:w-5 shrink-0 place-items-center rounded-full border-2 ${color.replace("bg-", "border-")}`}
+        className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${color.replace("bg-", "border-")}`}
       >
-        <span className={`h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full ${color}`} />
+        <span className={`h-2.5 w-2.5 rounded-full ${color}`} />
       </span>
-      <span className="min-w-0 flex-1 truncate text-left">{label}</span>
-      <span className="shrink-0 font-bold">{value}</span>
+      <span className="truncate">{label}</span>
+      <span className="font-bold text-base tabular-nums">{value}</span>
     </button>
   );
 }
