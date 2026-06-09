@@ -108,7 +108,7 @@ function LoginPage() {
 
       {/* ── Right form panel ── */}
       <div
-        className="flex flex-1 items-center justify-center p-8"
+        className="flex flex-1 items-center justify-center p-4 sm:p-8"
         style={{ background: "var(--background)" }}
       >
         <div className="w-full max-w-md">
@@ -152,7 +152,7 @@ function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@cinehubs.com"
                   autoComplete="email"
-                  className="w-full rounded-xl border py-3.5 pl-11 pr-4 text-sm outline-none transition-colors"
+                  className="w-full rounded-xl border py-3 sm:py-3.5 pl-10 sm:pl-11 pr-3 sm:pr-4 text-sm outline-none transition-colors"
                   style={{
                     borderColor: "var(--border)",
                     background: "var(--card)",
@@ -183,7 +183,7 @@ function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
-                  className="w-full rounded-xl border py-3.5 pl-11 pr-12 text-sm outline-none transition-colors"
+                  className="w-full rounded-xl border py-3 sm:py-3.5 pl-10 sm:pl-11 pr-11 sm:pr-12 text-sm outline-none transition-colors"
                   style={{
                     borderColor: "var(--border)",
                     background: "var(--card)",
@@ -231,7 +231,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl py-3.5 text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-60 mt-2"
+              className="w-full rounded-xl py-3 sm:py-3.5 text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-60 mt-2"
               style={{
                 background: "var(--gold)",
                 color: "var(--foreground)",

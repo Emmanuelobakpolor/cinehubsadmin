@@ -227,32 +227,32 @@ function BroadcastModal({
   }
 
   const inputCls =
-    "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold";
+    "w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-2.5 text-sm outline-none transition-colors focus:border-gold";
 
   return createPortal(
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-md rounded-2xl bg-card p-5 sm:p-8 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl bg-card p-4 sm:p-6 shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-2rem)]">
         {/* Header */}
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-4 sm:mb-6 flex items-start justify-between">
           <div>
-            <h2 className="text-lg font-bold">Send Push Broadcast</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h2 className="text-base sm:text-lg font-bold">Send Push Broadcast</h2>
+            <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
               Compose and send a notification that reaches users in their app.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="ml-4 rounded-lg p-1 hover:bg-muted"
+            className="ml-3 sm:ml-4 rounded-lg p-1 hover:bg-muted shrink-0"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Fields */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4 flex-1 overflow-y-auto">
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title</label>
             <input
@@ -268,7 +268,7 @@ function BroadcastModal({
             <label className="mb-1.5 block text-sm font-medium">Message</label>
             <textarea
               className={`${inputCls} resize-none`}
-              rows={4}
+              rows={3}
               placeholder="Write your broadcast message here…"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -292,21 +292,21 @@ function BroadcastModal({
         </div>
 
         {error && (
-          <p className="mt-3 text-sm text-destructive">{error}</p>
+          <p className="mt-2 sm:mt-3 text-sm text-destructive">{error}</p>
         )}
 
         {/* Footer */}
-        <div className="mt-6 flex gap-3">
+        <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3 border-t border-border pt-4 sm:pt-6">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-border py-3 text-sm font-semibold hover:bg-muted"
+            className="flex-1 rounded-xl border border-border py-2.5 sm:py-3 text-sm font-semibold hover:bg-muted"
           >
             Discard Draft
           </button>
           <button
             onClick={handleSend}
             disabled={sending}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-semibold hover:bg-gold/90 active:scale-[0.99] disabled:opacity-60"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold py-2.5 sm:py-3 text-sm font-semibold hover:bg-gold/90 active:scale-[0.99] disabled:opacity-60"
           >
             {sending ? (
               <>

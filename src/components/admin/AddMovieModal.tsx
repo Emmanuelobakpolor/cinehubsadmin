@@ -199,7 +199,7 @@ export function AddMovieModal({
   if (!open) return null;
 
   return (
-    <BaseModal open={open} onClose={onClose} className="p-0">
+    <BaseModal open={open} onClose={onClose} className="!max-w-2xl p-0">
       <div
         className="flex h-full w-full flex-col overflow-hidden"
         style={{ animation: "fadeIn 0.2s ease-out" }}
@@ -225,15 +225,15 @@ export function AddMovieModal({
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 sm:px-6 sm:py-5 sm:space-y-5">
 
           {/* Upload zones */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {/* Video upload */}
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gold/50 bg-gold/5 p-3 sm:p-6 text-center transition-colors hover:border-gold hover:bg-gold/10">
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gold/50 bg-gold/5 p-3 sm:p-4 text-center transition-colors hover:border-gold hover:bg-gold/10">
               <Upload className="h-8 w-8 text-gold" />
               <p className="text-sm font-medium">
                 {videoFile ? videoFile.name : isEdit ? "Replace video (optional)" : "Drop video file here"}
               </p>
               <p className="text-xs text-muted-foreground">MP4, MOV · Max 8 GB · 4K supported</p>
-              <span className="mt-1 rounded-lg border border-gold/40 px-4 py-1.5 text-xs font-medium text-gold">
+              <span className="mt-1 rounded-lg border border-gold/40 px-3 sm:px-4 py-1.5 text-xs font-medium text-gold">
                 Browse File
               </span>
               <input
@@ -245,13 +245,13 @@ export function AddMovieModal({
             </label>
 
             {/* Poster upload */}
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 p-3 sm:p-6 text-center transition-colors hover:border-gold hover:bg-gold/5">
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 p-3 sm:p-4 text-center transition-colors hover:border-gold hover:bg-gold/5">
               <ImageIcon className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm font-medium">
                 {posterFile ? posterFile.name : isEdit ? "Replace poster (optional)" : "Movie Poster"}
               </p>
               <p className="text-xs text-muted-foreground">JPG, PNG · Max 5 MB</p>
-              <span className="mt-1 rounded-lg border border-border px-4 py-1.5 text-xs font-medium">
+              <span className="mt-1 rounded-lg border border-border px-3 sm:px-4 py-1.5 text-xs font-medium">
                 Browse Image
               </span>
               <input
@@ -264,14 +264,14 @@ export function AddMovieModal({
           </div>
 
           {/* Title + Synopsis */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium">Movie Title</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter movie title"
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -281,20 +281,20 @@ export function AddMovieModal({
                 value={synopsis}
                 onChange={(e) => setSynopsis(e.target.value)}
                 placeholder="Write a compelling synopsis..."
-                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full resize-none rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
           </div>
 
           {/* Basic info */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium">Release Year</label>
               <input
                 value={releaseYear}
                 onChange={(e) => setReleaseYear(e.target.value)}
                 placeholder="2025"
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -303,7 +303,7 @@ export function AddMovieModal({
                 value={runtime}
                 onChange={(e) => setRuntime(e.target.value)}
                 placeholder="142 min"
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
             <div>
@@ -312,7 +312,7 @@ export function AddMovieModal({
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}
                 placeholder="18+"
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                className="w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
               />
             </div>
           </div>
@@ -324,7 +324,7 @@ export function AddMovieModal({
               value={director}
               onChange={(e) => setDirector(e.target.value)}
               placeholder="Director's full name"
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+              className="w-full rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
             />
           </div>
 
@@ -334,7 +334,7 @@ export function AddMovieModal({
               Trailer Clip{" "}
               <span className="text-muted-foreground font-normal">(optional — upload a short .mp4 clip, recommended)</span>
             </label>
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/20 px-5 py-4 transition-colors hover:border-gold hover:bg-gold/5">
+            <label className="flex cursor-pointer items-center gap-2 sm:gap-3 rounded-xl border-2 border-dashed border-border bg-muted/20 px-3 sm:px-4 py-3 sm:py-4 transition-colors hover:border-gold hover:bg-gold/5">
               <Upload className="h-5 w-5 shrink-0 text-gold" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">
@@ -342,7 +342,7 @@ export function AddMovieModal({
                 </p>
                 <p className="text-xs text-muted-foreground">MP4 · Max 500 MB · This plays automatically in the app</p>
               </div>
-              <span className="shrink-0 rounded-lg border border-gold/40 px-3 py-1 text-xs font-medium text-gold">
+              <span className="shrink-0 rounded-lg border border-gold/40 px-2 sm:px-3 py-1 text-xs font-medium text-gold whitespace-nowrap">
                 Browse
               </span>
               <input
@@ -363,7 +363,7 @@ export function AddMovieModal({
                 <span className="ml-2 text-xs font-normal text-gold">{selectedCategoryIds.length} selected</span>
               )}
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
               {apiCategories.map((cat) => {
                 const active = selectedCategoryIds.includes(cat.id);
                 return (
@@ -375,19 +375,19 @@ export function AddMovieModal({
                         active ? prev.filter((id) => id !== cat.id) : [...prev, cat.id]
                       )
                     }
-                    className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all ${
+                    className={`flex items-center justify-center gap-1 rounded-full border px-2 sm:px-4 py-1.5 text-xs font-medium transition-all ${
                       active
                         ? "border-gold bg-gold/10 text-gold"
                         : "border-border hover:border-gold/50 hover:text-gold"
                     }`}
                   >
-                    {active && <Check className="h-3 w-3" />}
-                    {cat.name}
+                    {active && <Check className="h-3 w-3 shrink-0" />}
+                    <span className="truncate">{cat.name}</span>
                   </button>
                 );
               })}
               {apiCategories.length === 0 && (
-                <p className="text-xs text-muted-foreground">Loading categories…</p>
+                <p className="col-span-2 sm:col-span-3 md:col-span-4 text-xs text-muted-foreground">Loading categories…</p>
               )}
             </div>
           </div>
@@ -397,7 +397,7 @@ export function AddMovieModal({
             <label className="mb-2 block text-sm font-medium">Cast & Roles</label>
             <div className="space-y-2">
               {cast.map((c, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   <input
                     value={c.name}
                     onChange={(e) =>
@@ -406,7 +406,7 @@ export function AddMovieModal({
                       )
                     }
                     placeholder={`Cast ${i + 1} — Full name`}
-                    className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                    className="rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
                   />
                   <input
                     value={c.role}
@@ -416,7 +416,7 @@ export function AddMovieModal({
                       )
                     }
                     placeholder="Role (e.g. Lead Actor)"
-                    className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
+                    className="rounded-xl border border-border bg-background px-3 sm:px-4 py-3 text-sm outline-none transition-colors focus:border-gold"
                   />
                 </div>
               ))}

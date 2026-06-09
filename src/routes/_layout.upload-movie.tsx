@@ -55,15 +55,15 @@ function UploadMoviePage() {
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {statCards.map(({ icon: Icon, title, value, sub }) => (
-            <div key={title} className="rounded-2xl bg-card px-4 py-4 shadow-sm sm:px-5">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold/10">
-                  <Icon className="h-5 w-5 text-gold" />
+            <div key={title} className="rounded-2xl bg-card px-3 sm:px-4 py-4 shadow-sm">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="grid h-9 w-9 sm:h-10 sm:w-10 shrink-0 place-items-center rounded-full bg-gold/10">
+                  <Icon className="h-4 sm:h-5 w-4 sm:w-5 text-gold" />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-xs text-muted-foreground">{title}</div>
-                  <div className="text-lg font-bold">{value}</div>
-                  <div className="text-xs text-muted-foreground">{sub}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs text-muted-foreground truncate">{title}</div>
+                  <div className="text-base sm:text-lg font-bold break-words">{value}</div>
+                  <div className="text-xs text-muted-foreground truncate">{sub}</div>
                 </div>
               </div>
             </div>
@@ -72,14 +72,14 @@ function UploadMoviePage() {
 
         <div
           onClick={() => setOpen(true)}
-          className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 px-4 py-10 text-center transition-all hover:border-gold/60 hover:bg-gold/10 sm:py-16"
+          className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gold/30 bg-gold/5 px-3 sm:px-4 py-8 sm:py-16 text-center transition-all hover:border-gold/60 hover:bg-gold/10"
         >
-          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110 sm:h-16 sm:w-16">
-            <Upload className="h-7 w-7 text-gold sm:h-8 sm:w-8" />
+          <div className="grid h-12 sm:h-14 w-12 sm:w-14 place-items-center rounded-2xl bg-gold/15 transition-transform group-hover:scale-110">
+            <Upload className="h-6 sm:h-7 w-6 sm:w-7 text-gold" />
           </div>
           <div>
-            <p className="font-semibold">Click to upload a new movie</p>
-            <p className="text-sm text-muted-foreground">MP4, MOV supported · up to 8 GB</p>
+            <p className="font-semibold text-sm sm:text-base">Click to upload a new movie</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">MP4, MOV supported · up to 8 GB</p>
           </div>
         </div>
       </div>
