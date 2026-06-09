@@ -50,11 +50,9 @@ export function AddMovieModal({
   const [runtime, setRuntime] = useState("");
   const [rating, setRating] = useState("");
   const [director, setDirector] = useState("");
-  const [cast, setCast] = useState([
-    { name: "", role: "" },
-    { name: "", role: "" },
-    { name: "", role: "" },
-  ]);
+  const [cast, setCast] = useState(
+    Array.from({ length: 10 }, () => ({ name: "", role: "" }))
+  );
   const [apiCategories, setApiCategories] = useState<Category[]>([]);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [trailerClipFile, setTrailerClipFile] = useState<File | null>(null);
@@ -77,7 +75,7 @@ export function AddMovieModal({
         const parts = editMovie.cast
           ? editMovie.cast.split(",").map((s) => s.trim())
           : [];
-        const rows = [0, 1, 2].map((i) => {
+        const rows = Array.from({ length: 10 }, (_, i) => i).map((i) => {
           const part = parts[i] ?? "";
           const match = part.match(/^(.+?)\s*\((.+)\)$/);
           return match
@@ -95,7 +93,7 @@ export function AddMovieModal({
         setRuntime("");
         setRating("");
         setDirector("");
-        setCast([{ name: "", role: "" }, { name: "", role: "" }, { name: "", role: "" }]);
+        setCast(Array.from({ length: 10 }, () => ({ name: "", role: "" })));
         setTrailerClipFile(null);
         setSelectedCategoryIds([]);
       }
