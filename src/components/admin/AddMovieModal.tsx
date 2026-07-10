@@ -31,6 +31,61 @@ interface Category {
   name: string;
 }
 
+interface CloudinarySignature {
+  signature: string;
+  timestamp: number;
+  cloud_name: string;
+  api_key: string;
+  folder: string;
+  resource_type: string;
+}
+
+async function getCloudinarySignature(resourceType: "video" | "image"): Promise<CloudinarySignature> {
+  const res = await fetch(`${API_BASE}/movies/upload-signature/?resource_type=${resourceType}`, {
+    headers: { Authorization: `Bearer ${getAccessToken()}` },
+  });
+  if (!res.ok) throw new Error("Could not get upload authorization from server.");
+  return res.json();
+}
+
+function uploadToCloudinary(
+  file: File,
+  resourceType: "video" | "image",
+  sig: CloudinarySignature,
+  onProgress: (loadedBytes: number) => void
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("api_key", sig.api_key);
+    fd.append("timestamp", String(sig.timestamp));
+    fd.append("signature", sig.signature);
+    fd.append("folder", sig.folder);
+
+    const xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener("progress", (e) => {
+      if (e.lengthComputable) onProgress(e.loaded);
+    });
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (data.secure_url) resolve(data.secure_url);
+          else reject(new Error("Cloudinary did not return a file URL."));
+        } catch {
+          reject(new Error("Unexpected response from Cloudinary."));
+        }
+      } else {
+        reject(new Error(`Cloudinary upload failed (status ${xhr.status}).`));
+      }
+    });
+    xhr.addEventListener("error", () => reject(new Error("Could not connect to Cloudinary.")));
+    xhr.addEventListener("abort", () => reject(new Error("Upload was cancelled.")));
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${sig.cloud_name}/${resourceType}/upload`);
+    xhr.send(fd);
+  });
+}
+
 export function AddMovieModal({
   open,
   onClose,
@@ -132,84 +187,83 @@ export function AddMovieModal({
       .map((c) => (c.role.trim() ? `${c.name.trim()} (${c.role.trim()})` : c.name.trim()))
       .join(", ");
 
-    const fd = new FormData();
-    fd.append("title", title.trim());
-    fd.append("synopsis", synopsis.trim());
-    fd.append("release_year", releaseYear.trim());
-    fd.append("runtime", runtime.trim());
-    fd.append("rating", rating.trim());
-    fd.append("director", director.trim());
-    fd.append("cast", castStr);
-    selectedCategoryIds.forEach((id) => fd.append("categories", String(id)));
-    if (trailerClipFile) fd.append("thriller_clip", trailerClipFile);
-    if (videoFile) fd.append("movie_file", videoFile);
-    if (posterFile) fd.append("thumbnail", posterFile);
-
-    const url = isEdit ? `${API_BASE}/movies/${editMovie!.id}/` : `${API_BASE}/movies/`;
-    const method = isEdit ? "PATCH" : "POST";
+    const payload: Record<string, unknown> = {
+      title: title.trim(),
+      synopsis: synopsis.trim(),
+      release_year: releaseYear.trim(),
+      runtime: runtime.trim(),
+      rating: rating.trim(),
+      director: director.trim(),
+      cast: castStr,
+      categories: selectedCategoryIds,
+    };
 
     setLoading(true);
     setUploadPct(0);
     uploadCtx.notifyStart(title.trim() || "Movie");
 
-    await new Promise<void>((resolve) => {
-      const xhr = new XMLHttpRequest();
+    try {
+      // Upload files straight to Cloudinary from the browser so large videos
+      // never have to round-trip through Django (which has strict body-size
+      // and timeout limits on the host).
+      const uploads: { field: string; file: File; resourceType: "video" | "image" }[] = [];
+      if (videoFile) uploads.push({ field: "movie_file", file: videoFile, resourceType: "video" });
+      if (trailerClipFile) uploads.push({ field: "thriller_clip", file: trailerClipFile, resourceType: "video" });
+      if (posterFile) uploads.push({ field: "thumbnail", file: posterFile, resourceType: "image" });
 
-      // Track the browser→server file transfer (phase 1)
-      xhr.upload.addEventListener("progress", (e) => {
-        if (e.lengthComputable) {
-          const pct = Math.round((e.loaded / e.total) * 100);
+      if (uploads.length > 0) {
+        const totalBytes = uploads.reduce((sum, u) => sum + u.file.size, 0);
+        const loadedByField = new Map<string, number>();
+        const updateProgress = () => {
+          const loaded = Array.from(loadedByField.values()).reduce((a, b) => a + b, 0);
+          const pct = totalBytes > 0 ? Math.round((loaded / totalBytes) * 100) : 0;
           setUploadPct(pct);
           uploadCtx.notifyProgress(pct);
-        }
-      });
+        };
 
-      // File fully received by Django — now it's uploading to Cloudinary (phase 2)
-      xhr.upload.addEventListener("loadend", () => {
-        setUploadPct(101);
-        uploadCtx.notifyProcessing();
-      });
+        const results = await Promise.all(
+          uploads.map(async ({ field, file, resourceType }) => {
+            const sig = await getCloudinarySignature(resourceType);
+            const url = await uploadToCloudinary(file, resourceType, sig, (loaded) => {
+              loadedByField.set(field, loaded);
+              updateProgress();
+            });
+            return [field, url] as const;
+          })
+        );
+        for (const [field, url] of results) payload[field] = url;
+      }
 
-      xhr.addEventListener("load", () => {
-        setLoading(false);
-        setUploadPct(null);
-        try {
-          const data = JSON.parse(xhr.responseText);
-          if (xhr.status < 200 || xhr.status >= 300) {
-            const msg = Object.values(data).flat().join(" ") || "Something went wrong.";
-            setError(String(msg));
-            uploadCtx.notifyError(String(msg));
-          } else {
-            uploadCtx.notifyDone();
-            onAdd(data as Movie);
-          }
-        } catch {
-          setError("Unexpected response from server.");
-          uploadCtx.notifyError("Unexpected response from server.");
-        }
-        resolve();
-      });
+      setUploadPct(101);
+      uploadCtx.notifyProcessing();
 
-      xhr.addEventListener("error", () => {
-        setLoading(false);
-        setUploadPct(null);
-        setError("Could not connect to the server.");
-        uploadCtx.notifyError("Could not connect to the server.");
-        resolve();
+      const url = isEdit ? `${API_BASE}/movies/${editMovie!.id}/` : `${API_BASE}/movies/`;
+      const method = isEdit ? "PATCH" : "POST";
+      const res = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-
-      xhr.addEventListener("abort", () => {
-        setLoading(false);
-        setUploadPct(null);
-        setError("Upload was cancelled.");
-        uploadCtx.notifyError("Upload was cancelled.");
-        resolve();
-      });
-
-      xhr.open(method, url);
-      xhr.setRequestHeader("Authorization", `Bearer ${getAccessToken()}`);
-      xhr.send(fd);
-    });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        const msg = (data ? Object.values(data).flat().join(" ") : "") || "Something went wrong.";
+        setError(String(msg));
+        uploadCtx.notifyError(String(msg));
+      } else {
+        uploadCtx.notifyDone();
+        onAdd(data as Movie);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed.";
+      setError(msg);
+      uploadCtx.notifyError(msg);
+    } finally {
+      setLoading(false);
+      setUploadPct(null);
+    }
   };
 
   if (!open || minimized) return null;
