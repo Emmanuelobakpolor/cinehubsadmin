@@ -48,10 +48,11 @@ async function getCloudinarySignature(resourceType: "video" | "image"): Promise<
   return res.json();
 }
 
-// Matches the backend's cloudinary.uploader.upload_large chunk_size (movies/views.py).
 // Cloudinary's plain, non-chunked /upload endpoint rejects/fails large single requests,
 // which is why big video files were stalling partway through and erroring out.
-const CLOUDINARY_CHUNK_SIZE = 20_000_000;
+// Kept well above Cloudinary's 5MB minimum but small enough that a single dropped
+// chunk on a flaky connection (e.g. mobile/cellular) is cheap to retry.
+const CLOUDINARY_CHUNK_SIZE = 6_000_000;
 
 function uploadToCloudinary(
   file: File,
@@ -103,8 +104,10 @@ function uploadSingleRequest(
   });
 }
 
-const CHUNK_MAX_RETRIES = 3;
-const CHUNK_RETRY_DELAY_MS = 1500;
+const CHUNK_MAX_RETRIES = 5;
+// Exponential backoff capped at 8s, giving a spotty mobile connection real
+// time to recover between attempts instead of hammering it.
+const CHUNK_RETRY_BACKOFF_MS = [1000, 2000, 4000, 8000, 8000];
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -151,14 +154,18 @@ function uploadInChunks(
     });
   };
 
-  const sendChunkWithRetry = async (start: number, end: number): Promise<{ status: number; body: string }> => {
+  const sendChunkWithRetry = async (chunkIndex: number, start: number, end: number): Promise<{ status: number; body: string }> => {
     for (let attempt = 1; attempt <= CHUNK_MAX_RETRIES; attempt++) {
       try {
         return await sendChunkOnce(start, end);
       } catch (err) {
         if (err instanceof Error && err.message === "aborted") throw err;
+        console.warn(
+          `[cloudinary-upload] chunk ${chunkIndex} (${start}-${end - 1}) attempt ${attempt}/${CHUNK_MAX_RETRIES} failed:`,
+          err
+        );
         if (attempt === CHUNK_MAX_RETRIES) throw new Error("Could not connect to Cloudinary.");
-        await delay(CHUNK_RETRY_DELAY_MS * attempt);
+        await delay(CHUNK_RETRY_BACKOFF_MS[attempt - 1] ?? 8000);
       }
     }
     throw new Error("Could not connect to Cloudinary.");
@@ -169,9 +176,10 @@ function uploadInChunks(
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
       const start = chunkIndex * CLOUDINARY_CHUNK_SIZE;
       const end = Math.min(start + CLOUDINARY_CHUNK_SIZE, file.size);
-      const { status, body } = await sendChunkWithRetry(start, end);
+      const { status, body } = await sendChunkWithRetry(chunkIndex, start, end);
       if (status < 200 || status >= 300) {
-        throw new Error(`Cloudinary upload failed (status ${status}).`);
+        console.error(`[cloudinary-upload] chunk ${chunkIndex} rejected (status ${status}):`, body);
+        throw new Error(`Cloudinary upload failed (status ${status}): ${body}`);
       }
       onProgress(end);
       lastBody = body;
