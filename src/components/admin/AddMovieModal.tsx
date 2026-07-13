@@ -54,6 +54,22 @@ async function getCloudinarySignature(resourceType: "video" | "image"): Promise<
 // chunk on a flaky connection (e.g. mobile/cellular) is cheap to retry.
 const CLOUDINARY_CHUNK_SIZE = 6_000_000;
 
+// Cloudinary enforces a max asset size at the account/plan level (e.g. 100MB for
+// video on the free plan) regardless of chunking. Surface that specific case with
+// an actionable message instead of the raw JSON error body.
+function describeCloudinaryError(status: number, body: string): string {
+  try {
+    const parsed = JSON.parse(body);
+    const message: string | undefined = parsed?.error?.message;
+    if (message && /file size too large/i.test(message)) {
+      return "This video is too large for your current Cloudinary plan. Upgrade your Cloudinary plan (Settings → Plan) or use a smaller file.";
+    }
+  } catch {
+    // fall through to the raw message below
+  }
+  return `Cloudinary upload failed (status ${status}): ${body}`;
+}
+
 function uploadToCloudinary(
   file: File,
   resourceType: "video" | "image",
@@ -95,7 +111,7 @@ function uploadSingleRequest(
         }
       } else {
         console.error(`[cloudinary-upload] single request rejected (status ${xhr.status}):`, xhr.responseText);
-        reject(new Error(`Cloudinary upload failed (status ${xhr.status}): ${xhr.responseText}`));
+        reject(new Error(describeCloudinaryError(xhr.status, xhr.responseText)));
       }
     });
     xhr.addEventListener("error", () => reject(new Error("Could not connect to Cloudinary.")));
@@ -180,7 +196,7 @@ function uploadInChunks(
       const { status, body } = await sendChunkWithRetry(chunkIndex, start, end);
       if (status < 200 || status >= 300) {
         console.error(`[cloudinary-upload] chunk ${chunkIndex} rejected (status ${status}):`, body);
-        throw new Error(`Cloudinary upload failed (status ${status}): ${body}`);
+        throw new Error(describeCloudinaryError(status, body));
       }
       onProgress(end);
       lastBody = body;
