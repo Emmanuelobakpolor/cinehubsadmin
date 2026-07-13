@@ -103,25 +103,32 @@ function uploadSingleRequest(
   });
 }
 
+const CHUNK_MAX_RETRIES = 3;
+const CHUNK_RETRY_DELAY_MS = 1500;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Cloudinary's chunked upload protocol: send the same file across multiple
 // requests to the same endpoint, each carrying a Content-Range header and a
 // shared X-Unique-Upload-Id, so Cloudinary reassembles them server-side.
+//
+// Each chunk is retried a few times on a transient network drop before the
+// whole upload is given up on — a single Wi-Fi/connection blip on one of many
+// sequential chunk requests shouldn't have to restart a multi-hundred-MB upload.
 function uploadInChunks(
   file: File,
   resourceType: "video" | "image",
   sig: CloudinarySignature,
   onProgress: (loadedBytes: number) => void
 ): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const uploadId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const totalChunks = Math.ceil(file.size / CLOUDINARY_CHUNK_SIZE);
-    let bytesUploaded = 0;
+  const uploadId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const totalChunks = Math.ceil(file.size / CLOUDINARY_CHUNK_SIZE);
 
-    const sendChunk = (chunkIndex: number) => {
-      const start = chunkIndex * CLOUDINARY_CHUNK_SIZE;
-      const end = Math.min(start + CLOUDINARY_CHUNK_SIZE, file.size);
+  const sendChunkOnce = (start: number, end: number): Promise<{ status: number; body: string }> => {
+    return new Promise((resolve, reject) => {
       const chunk = file.slice(start, end);
-
       const fd = new FormData();
       fd.append("file", chunk);
       fd.append("api_key", sig.api_key);
@@ -135,33 +142,48 @@ function uploadInChunks(
       xhr.setRequestHeader("Content-Range", `bytes ${start}-${end - 1}/${file.size}`);
 
       xhr.upload.addEventListener("progress", (e) => {
-        if (e.lengthComputable) onProgress(bytesUploaded + e.loaded);
+        if (e.lengthComputable) onProgress(start + e.loaded);
       });
-      xhr.addEventListener("load", () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          bytesUploaded = end;
-          try {
-            const data = JSON.parse(xhr.responseText);
-            if (chunkIndex === totalChunks - 1) {
-              if (data.secure_url) resolve(data.secure_url);
-              else reject(new Error("Cloudinary did not return a file URL."));
-            } else {
-              sendChunk(chunkIndex + 1);
-            }
-          } catch {
-            reject(new Error("Unexpected response from Cloudinary."));
-          }
-        } else {
-          reject(new Error(`Cloudinary upload failed (status ${xhr.status}).`));
-        }
-      });
-      xhr.addEventListener("error", () => reject(new Error("Could not connect to Cloudinary.")));
-      xhr.addEventListener("abort", () => reject(new Error("Upload was cancelled.")));
+      xhr.addEventListener("load", () => resolve({ status: xhr.status, body: xhr.responseText }));
+      xhr.addEventListener("error", () => reject(new Error("network")));
+      xhr.addEventListener("abort", () => reject(new Error("aborted")));
       xhr.send(fd);
-    };
+    });
+  };
 
-    sendChunk(0);
-  });
+  const sendChunkWithRetry = async (start: number, end: number): Promise<{ status: number; body: string }> => {
+    for (let attempt = 1; attempt <= CHUNK_MAX_RETRIES; attempt++) {
+      try {
+        return await sendChunkOnce(start, end);
+      } catch (err) {
+        if (err instanceof Error && err.message === "aborted") throw err;
+        if (attempt === CHUNK_MAX_RETRIES) throw new Error("Could not connect to Cloudinary.");
+        await delay(CHUNK_RETRY_DELAY_MS * attempt);
+      }
+    }
+    throw new Error("Could not connect to Cloudinary.");
+  };
+
+  return (async () => {
+    let lastBody = "";
+    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      const start = chunkIndex * CLOUDINARY_CHUNK_SIZE;
+      const end = Math.min(start + CLOUDINARY_CHUNK_SIZE, file.size);
+      const { status, body } = await sendChunkWithRetry(start, end);
+      if (status < 200 || status >= 300) {
+        throw new Error(`Cloudinary upload failed (status ${status}).`);
+      }
+      onProgress(end);
+      lastBody = body;
+    }
+    try {
+      const data = JSON.parse(lastBody);
+      if (data.secure_url) return data.secure_url;
+      throw new Error("Cloudinary did not return a file URL.");
+    } catch {
+      throw new Error("Unexpected response from Cloudinary.");
+    }
+  })();
 }
 
 export function AddMovieModal({
