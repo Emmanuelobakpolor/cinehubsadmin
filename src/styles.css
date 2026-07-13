@@ -1,0 +1,325 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-basic: var(--basic);
+  --color-basic-soft: var(--basic-soft);
+  --color-premium: var(--premium);
+  --color-premium-soft: var(--premium-soft);
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.97 0.005 250);
+  --foreground: oklch(0.18 0.02 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 250);
+  --primary: oklch(0.78 0.14 80);
+  --primary-foreground: oklch(0.18 0.02 250);
+  --secondary: oklch(0.96 0.005 250);
+  --secondary-foreground: oklch(0.2 0.02 250);
+  --muted: oklch(0.96 0.005 250);
+  --muted-foreground: oklch(0.5 0.02 250);
+  --accent: oklch(0.94 0.02 80);
+  --accent-foreground: oklch(0.2 0.02 250);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.92 0.01 250);
+  --input: oklch(0.92 0.01 250);
+  --ring: oklch(0.78 0.14 80);
+
+  --sidebar: oklch(0.13 0.01 250);
+  --sidebar-foreground: oklch(0.95 0.005 250);
+  --sidebar-active: oklch(0.2 0.04 80);
+
+  --gold: oklch(0.78 0.14 80);
+  --gold-soft: oklch(0.95 0.06 85);
+  --success: oklch(0.6 0.15 150);
+  --success-soft: oklch(0.93 0.07 150);
+  --basic: oklch(0.65 0.18 320);
+  --basic-soft: oklch(0.95 0.05 320);
+  --premium: oklch(0.55 0.18 260);
+  --premium-soft: oklch(0.93 0.05 260);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Global micro-interactions for cards & tables (auto-applies to existing markup) */
+  .rounded-2xl.bg-card,
+  .rounded-2xl.bg-card.shadow-sm {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rounded-2xl.bg-card:hover,
+  .rounded-2xl.bg-card.shadow-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.06);
+  }
+
+  .table-row,
+  [class*="grid-cols-"] > div[class*="border-b"]:not(:first-child) {
+    transition: background-color 0.15s ease;
+  }
+  .table-row:hover,
+  [class*="grid-cols-"] > div[class*="border-b"]:hover {
+    background-color: oklch(0.985 0.003 250);
+  }
+
+  button, .btn {
+    transition: transform 0.1s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+  button:active, .btn:active {
+    transform: scale(0.985);
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Sidebar polished styles */
+.sidebar-nav-link {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-nav-link:hover {
+  transform: translateX(3px);
+}
+.sidebar-nav-link.active {
+  background-color: var(--color-sidebar-active);
+  color: var(--color-gold);
+}
+.sidebar-nav-link .icon {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-nav-link:hover .icon {
+  transform: scale(1.1) translateX(1px);
+}
+
+/* Animated active indicator */
+.sidebar-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  background: linear-gradient(to bottom, var(--color-gold), oklch(0.78 0.14 80));
+  border-radius: 0 3px 3px 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+.sidebar-nav-link.active .sidebar-active-indicator {
+  opacity: 1;
+}
+
+/* Smooth sidebar collapse */
+aside.sidebar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+aside.sidebar.collapsed {
+  width: 4.5rem;
+}
+aside.sidebar.collapsed .sidebar-label {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+aside.sidebar .sidebar-label {
+  transition: all 0.25s ease;
+}
+
+/* Mobile bottom sheet entrance */
+@keyframes slideUp {
+  from { transform: translateY(5%); opacity: 0; }
+  to   { transform: translateY(0);  opacity: 1; }
+}
+@media (max-width: 639px) {
+  .modal-sheet {
+    animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+}
+@media (min-width: 640px) {
+  .modal-sheet {
+    animation: fadeIn 0.2s ease-out both;
+  }
+}
+
+/* Page content entrance */
+.page-enter {
+  animation: pageEnter 0.35s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal & popover polish (leverages tw-animate-css) */
+[data-state="open"] {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Main content transitions with sidebar collapse */
+main.main-content {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Notification dot pulse */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.65; }
+}
+.notification-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Search input focus glow */
+input[type="text"]:focus {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 0 0 3px oklch(0.78 0.14 80 / 0.12);
+}
+
+/* Mobile touch target helpers */
+@media (max-width: 640px) {
+  .touch-target {
+    padding-top: 0.75rem; /* 12px */
+    padding-bottom: 0.75rem;
+    min-height: 44px;
+  }
+  input[type="text"], textarea, select {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+/* Extra small devices (phones < 375px) */
+@media (max-width: 374px) {
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"],
+  textarea, 
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Modal padding optimization for very small screens */
+  .rounded-2xl.shadow-2xl {
+    margin: 0.5rem;
+  }
+
+  /* Tighter button padding for small screens */
+  button {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Reduce gap sizes on very small screens */
+  .gap-4 {
+    gap: 0.75rem;
+  }
+
+  /* Reduce padding on cards */
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Ensure horizontal overflow is guarded */
+html, body, #root {
+  overflow-x: hidden;
+}
+
+/* Responsive helpers */
+/* Adds horizontal scrolling to wide tables on small viewports */
+.responsive-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure touch targets are large enough on small devices */
+@media (max-width: 640px) {
+  button, .btn {
+    min-height: 44px;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  /* Constrain large dropdowns and popovers to viewport width */
+  .popover, .dropdown, [role="listbox"], .menu {
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
+  }
+
+  /* Make main content padding comfortable on small screens */
+  .page-inner, main.main-content {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
