@@ -48,8 +48,25 @@ async function getCloudinarySignature(resourceType: "video" | "image"): Promise<
   return res.json();
 }
 
+// Matches the backend's cloudinary.uploader.upload_large chunk_size (movies/views.py).
+// Cloudinary's plain, non-chunked /upload endpoint rejects/fails large single requests,
+// which is why big video files were stalling partway through and erroring out.
+const CLOUDINARY_CHUNK_SIZE = 20_000_000;
+
 function uploadToCloudinary(
   file: File,
+  resourceType: "video" | "image",
+  sig: CloudinarySignature,
+  onProgress: (loadedBytes: number) => void
+): Promise<string> {
+  if (file.size <= CLOUDINARY_CHUNK_SIZE) {
+    return uploadSingleRequest(file, resourceType, sig, onProgress);
+  }
+  return uploadInChunks(file, resourceType, sig, onProgress);
+}
+
+function uploadSingleRequest(
+  file: File | Blob,
   resourceType: "video" | "image",
   sig: CloudinarySignature,
   onProgress: (loadedBytes: number) => void
@@ -83,6 +100,67 @@ function uploadToCloudinary(
     xhr.addEventListener("abort", () => reject(new Error("Upload was cancelled.")));
     xhr.open("POST", `https://api.cloudinary.com/v1_1/${sig.cloud_name}/${resourceType}/upload`);
     xhr.send(fd);
+  });
+}
+
+// Cloudinary's chunked upload protocol: send the same file across multiple
+// requests to the same endpoint, each carrying a Content-Range header and a
+// shared X-Unique-Upload-Id, so Cloudinary reassembles them server-side.
+function uploadInChunks(
+  file: File,
+  resourceType: "video" | "image",
+  sig: CloudinarySignature,
+  onProgress: (loadedBytes: number) => void
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const uploadId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const totalChunks = Math.ceil(file.size / CLOUDINARY_CHUNK_SIZE);
+    let bytesUploaded = 0;
+
+    const sendChunk = (chunkIndex: number) => {
+      const start = chunkIndex * CLOUDINARY_CHUNK_SIZE;
+      const end = Math.min(start + CLOUDINARY_CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+
+      const fd = new FormData();
+      fd.append("file", chunk);
+      fd.append("api_key", sig.api_key);
+      fd.append("timestamp", String(sig.timestamp));
+      fd.append("signature", sig.signature);
+      fd.append("folder", sig.folder);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `https://api.cloudinary.com/v1_1/${sig.cloud_name}/${resourceType}/upload`);
+      xhr.setRequestHeader("X-Unique-Upload-Id", uploadId);
+      xhr.setRequestHeader("Content-Range", `bytes ${start}-${end - 1}/${file.size}`);
+
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) onProgress(bytesUploaded + e.loaded);
+      });
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          bytesUploaded = end;
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (chunkIndex === totalChunks - 1) {
+              if (data.secure_url) resolve(data.secure_url);
+              else reject(new Error("Cloudinary did not return a file URL."));
+            } else {
+              sendChunk(chunkIndex + 1);
+            }
+          } catch {
+            reject(new Error("Unexpected response from Cloudinary."));
+          }
+        } else {
+          reject(new Error(`Cloudinary upload failed (status ${xhr.status}).`));
+        }
+      });
+      xhr.addEventListener("error", () => reject(new Error("Could not connect to Cloudinary.")));
+      xhr.addEventListener("abort", () => reject(new Error("Upload was cancelled.")));
+      xhr.send(fd);
+    };
+
+    sendChunk(0);
   });
 }
 
