@@ -94,7 +94,8 @@ function uploadSingleRequest(
           reject(new Error("Unexpected response from Cloudinary."));
         }
       } else {
-        reject(new Error(`Cloudinary upload failed (status ${xhr.status}).`));
+        console.error(`[cloudinary-upload] single request rejected (status ${xhr.status}):`, xhr.responseText);
+        reject(new Error(`Cloudinary upload failed (status ${xhr.status}): ${xhr.responseText}`));
       }
     });
     xhr.addEventListener("error", () => reject(new Error("Could not connect to Cloudinary.")));
