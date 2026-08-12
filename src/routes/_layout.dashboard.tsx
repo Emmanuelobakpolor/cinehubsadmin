@@ -151,7 +151,7 @@ function Dashboard() {
                     <div className="h-14 w-14 overflow-hidden rounded-lg bg-slate-600">
                       {m.thumbnail && (
                         <img
-                          src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                          src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-3fa8c.up.railway.app${m.thumbnail}`}
                           alt={m.title}
                           className="h-full w-full object-cover"
                         />
@@ -196,7 +196,7 @@ function Dashboard() {
                         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-600">
                           {m.thumbnail && (
                             <img
-                              src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-a39f0a.up.railway.app${m.thumbnail}`}
+                              src={m.thumbnail.startsWith("http") ? m.thumbnail : `https://web-production-3fa8c.up.railway.app${m.thumbnail}`}
                               alt={m.title}
                               className="h-full w-full object-cover"
                             />

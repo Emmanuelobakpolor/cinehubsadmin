@@ -12,14 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LayoutUsersRouteImport } from './routes/_layout.users'
 import { Route as LayoutUploadMovieRouteImport } from './routes/_layout.upload-movie'
 import { Route as LayoutSubscribersRouteImport } from './routes/_layout.subscribers'
+import { Route as LayoutSettingsRouteImport } from './routes/_layout.settings'
 import { Route as LayoutMoviesRouteImport } from './routes/_layout.movies'
 import { Route as LayoutDashboardRouteImport } from './routes/_layout.dashboard'
 import { Route as LayoutCategoriesRouteImport } from './routes/_layout.categories'
 import { Route as LayoutBroadcastRouteImport } from './routes/_layout.broadcast'
-import { Route as LayoutSettingsRouteImport } from './routes/_layout.settings'
-import { Route as LayoutUsersRouteImport } from './routes/_layout.users'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -35,6 +35,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LayoutUsersRoute = LayoutUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutUploadMovieRoute = LayoutUploadMovieRouteImport.update({
   id: '/upload-movie',
   path: '/upload-movie',
@@ -43,6 +48,11 @@ const LayoutUploadMovieRoute = LayoutUploadMovieRouteImport.update({
 const LayoutSubscribersRoute = LayoutSubscribersRouteImport.update({
   id: '/subscribers',
   path: '/subscribers',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutMoviesRoute = LayoutMoviesRouteImport.update({
@@ -65,16 +75,6 @@ const LayoutBroadcastRoute = LayoutBroadcastRouteImport.update({
   path: '/broadcast',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => LayoutRoute,
-} as any)
-const LayoutUsersRoute = LayoutUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => LayoutRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,9 +84,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
   '/settings': typeof LayoutSettingsRoute
-  '/users': typeof LayoutUsersRoute
   '/subscribers': typeof LayoutSubscribersRoute
   '/upload-movie': typeof LayoutUploadMovieRoute
+  '/users': typeof LayoutUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -96,9 +96,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
   '/settings': typeof LayoutSettingsRoute
-  '/users': typeof LayoutUsersRoute
   '/subscribers': typeof LayoutSubscribersRoute
   '/upload-movie': typeof LayoutUploadMovieRoute
+  '/users': typeof LayoutUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,9 +110,9 @@ export interface FileRoutesById {
   '/_layout/dashboard': typeof LayoutDashboardRoute
   '/_layout/movies': typeof LayoutMoviesRoute
   '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/users': typeof LayoutUsersRoute
   '/_layout/subscribers': typeof LayoutSubscribersRoute
   '/_layout/upload-movie': typeof LayoutUploadMovieRoute
+  '/_layout/users': typeof LayoutUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -124,9 +124,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/movies'
     | '/settings'
-    | '/users'
     | '/subscribers'
     | '/upload-movie'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -136,9 +136,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/movies'
     | '/settings'
-    | '/users'
     | '/subscribers'
     | '/upload-movie'
+    | '/users'
   id:
     | '__root__'
     | '/'
@@ -149,9 +149,9 @@ export interface FileRouteTypes {
     | '/_layout/dashboard'
     | '/_layout/movies'
     | '/_layout/settings'
-    | '/_layout/users'
     | '/_layout/subscribers'
     | '/_layout/upload-movie'
+    | '/_layout/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_layout/users': {
+      id: '/_layout/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof LayoutUsersRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/upload-movie': {
       id: '/_layout/upload-movie'
       path: '/upload-movie'
@@ -195,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/subscribers'
       fullPath: '/subscribers'
       preLoaderRoute: typeof LayoutSubscribersRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/settings': {
+      id: '/_layout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/movies': {
@@ -225,20 +239,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutBroadcastRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/settings': {
-      id: '/_layout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof LayoutSettingsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
-    '/_layout/users': {
-      id: '/_layout/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof LayoutUsersRouteImport
-      parentRoute: typeof LayoutRoute
-    }
   }
 }
 
@@ -248,9 +248,9 @@ interface LayoutRouteChildren {
   LayoutDashboardRoute: typeof LayoutDashboardRoute
   LayoutMoviesRoute: typeof LayoutMoviesRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutUsersRoute: typeof LayoutUsersRoute
   LayoutSubscribersRoute: typeof LayoutSubscribersRoute
   LayoutUploadMovieRoute: typeof LayoutUploadMovieRoute
+  LayoutUsersRoute: typeof LayoutUsersRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -259,9 +259,9 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutDashboardRoute: LayoutDashboardRoute,
   LayoutMoviesRoute: LayoutMoviesRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutUsersRoute: LayoutUsersRoute,
   LayoutSubscribersRoute: LayoutSubscribersRoute,
   LayoutUploadMovieRoute: LayoutUploadMovieRoute,
+  LayoutUsersRoute: LayoutUsersRoute,
 }
 
 const LayoutRouteWithChildren =
