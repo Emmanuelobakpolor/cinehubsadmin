@@ -288,6 +288,10 @@ function UsersPage() {
             setCount((c) => Math.max(0, c - 1));
             setSelected(null);
           }}
+          onVerified={(id) => {
+            setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, is_email_verified: true } : u)));
+            setSelected((s) => (s && s.id === id ? { ...s, is_email_verified: true } : s));
+          }}
         />
       )}
     </>
@@ -298,12 +302,16 @@ function UserDetailModal({
   user,
   onClose,
   onDeleted,
+  onVerified,
 }: {
   user: AdminUser;
   onClose: () => void;
   onDeleted: (id: number) => void;
+  onVerified: (id: number) => void;
 }) {
   const [confirming, setConfirming] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -330,6 +338,26 @@ function UserDetailModal({
       setDeleteError(e.message ?? "Something went wrong.");
       setDeleting(false);
       setConfirming(false);
+    }
+  }
+
+  async function handleVerify() {
+    setVerifying(true);
+    setVerifyError(null);
+    try {
+      const res = await fetch(`${API_BASE}/users/${user.id}/verify/`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${getAccessToken()}` },
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? data.detail ?? "Failed to verify user.");
+      }
+      onVerified(user.id);
+    } catch (e: any) {
+      setVerifyError(e.message ?? "Something went wrong.");
+    } finally {
+      setVerifying(false);
     }
   }
 
@@ -364,9 +392,13 @@ function UserDetailModal({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold">{user.full_name}</span>
-                {user.is_email_verified && (
+                {user.is_email_verified ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-[11px] font-semibold text-green-600">
                     <CheckCircle className="h-3 w-3" /> Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-[11px] font-semibold text-rose-600">
+                    <XCircle className="h-3 w-3" /> Unverified
                   </span>
                 )}
               </div>
@@ -395,6 +427,21 @@ function UserDetailModal({
               value={user.is_email_verified ? "Yes" : "No"}
               muted={!user.is_email_verified}
             />
+            {!user.is_email_verified && (
+              <div>
+                {verifyError && (
+                  <p className="mb-2 rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-600">{verifyError}</p>
+                )}
+                <button
+                  onClick={handleVerify}
+                  disabled={verifying}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-green-500/40 py-2.5 text-sm font-medium text-green-600 transition-colors hover:bg-green-500/10 active:scale-[0.98] disabled:opacity-50"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  {verifying ? "Verifying..." : "Mark email as verified"}
+                </button>
+              </div>
+            )}
             <DetailRow
               icon={<Users className="h-4 w-4" />}
               label="Joined"
