@@ -87,7 +87,7 @@ function MoviesPage() {
         </button>
       </div>
 
-      <div className="mt-6 min-w-0 overflow-hidden rounded-2xl bg-card shadow-sm">
+      <div className="mt-6 min-w-0 rounded-2xl bg-card shadow-sm">
         {loading ? (
           <div className="space-y-4 p-4 sm:p-6">
             {[1, 2, 3].map((i) => (
@@ -174,7 +174,7 @@ function MoviesPage() {
                       <MoreHorizontal className="h-5 w-5" />
                     </button>
                     {menuId === m.id && (
-                      <div className="absolute right-0 top-9 z-10 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
+                      <div className="absolute right-0 top-11 z-30 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
                         {m.id !== featuredMovieId && (
                           <button
                             onClick={() => handleSetFeatured(m.id)}
