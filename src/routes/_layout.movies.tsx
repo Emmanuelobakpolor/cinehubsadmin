@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus, ShoppingCart } from "lucide-react";
 import { AddMovieModal, type Movie } from "@/components/admin/AddMovieModal";
 import { SuccessModal } from "@/components/admin/SuccessModal";
@@ -21,6 +22,7 @@ function MoviesPage() {
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
   const [success, setSuccess] = useState(false);
   const [menuId, setMenuId] = useState<number | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<DOMRect | null>(null);
   const [featuredMovieId, setFeaturedMovieId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,6 +39,36 @@ function MoviesPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  // The menu is portalled to <body> so the page's overflow-hidden wrappers can't clip it.
+  const toggleMenu = (id: number, button: HTMLElement) => {
+    if (menuId === id) {
+      setMenuId(null);
+      return;
+    }
+    setMenuAnchor(button.getBoundingClientRect());
+    setMenuId(id);
+  };
+
+  useEffect(() => {
+    if (menuId === null) return;
+    const close = () => setMenuId(null);
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (!t.closest("[data-movie-menu]") && !t.closest("[data-movie-menu-trigger]")) close();
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", close, true);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", close, true);
+    };
+  }, [menuId]);
 
   const handleSetFeatured = async (id: number) => {
     setMenuId(null);
@@ -168,38 +200,12 @@ function MoviesPage() {
 
                   <div className="relative">
                     <button
-                      onClick={() => setMenuId(menuId === m.id ? null : m.id)}
+                      data-movie-menu-trigger
+                      onClick={(e) => toggleMenu(m.id, e.currentTarget)}
                       className="grid h-10 w-10 place-items-center rounded-md hover:bg-muted"
                     >
                       <MoreHorizontal className="h-5 w-5" />
                     </button>
-                    {menuId === m.id && (
-                      <div className="absolute right-0 top-11 z-30 w-48 rounded-lg border border-border bg-card p-1 shadow-lg">
-                        {m.id !== featuredMovieId && (
-                          <button
-                            onClick={() => handleSetFeatured(m.id)}
-                            className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gold hover:bg-muted"
-                          >
-                            Set as Featured <Star className="h-4 w-4" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => {
-                            setEditingMovie(m);
-                            setMenuId(null);
-                          }}
-                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
-                        >
-                          Edit Movie <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(m.id)}
-                          className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
-                        >
-                          Delete Movie <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -244,35 +250,12 @@ function MoviesPage() {
 
                   <div className="relative">
                     <button
-                      onClick={() => setMenuId(menuId === m.id ? null : m.id)}
+                      data-movie-menu-trigger
+                      onClick={(e) => toggleMenu(m.id, e.currentTarget)}
                       className="flex w-full items-center justify-center gap-2 rounded-lg sm:rounded-xl border border-border px-2 sm:px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium hover:bg-muted active:scale-[0.98] transition-all"
                     >
                       Actions <MoreHorizontal className="h-4 w-4" />
                     </button>
-                    {menuId === m.id && (
-                      <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-10 rounded-lg sm:rounded-xl border border-border bg-card p-1 sm:p-1.5 shadow-lg">
-                        {m.id !== featuredMovieId && (
-                          <button
-                            onClick={() => handleSetFeatured(m.id)}
-                            className="flex w-full items-center justify-between rounded-md px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gold hover:bg-muted"
-                          >
-                            Set as Featured <Star className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => { setEditingMovie(m); setMenuId(null); }}
-                          className="flex w-full items-center justify-between rounded-md px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm hover:bg-muted"
-                        >
-                          Edit Movie <Pencil className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(m.id)}
-                          className="flex w-full items-center justify-between rounded-md px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-destructive hover:bg-muted"
-                        >
-                          Delete Movie <Trash2 className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -295,6 +278,59 @@ function MoviesPage() {
       />
 
       <SuccessModal open={success} onClose={() => setSuccess(false)} />
+
+      {menuId !== null && menuAnchor && (() => {
+        const id = menuId;
+        const items = id !== featuredMovieId ? 3 : 2;
+        const menuHeight = items * 40 + 10;
+        // Open upward when there isn't room below the button.
+        const openUp = menuAnchor.bottom + menuHeight + 8 > window.innerHeight && menuAnchor.top > menuHeight + 8;
+        const wide = menuAnchor.width > 192; // mobile "Actions" button: match its width
+        const width = wide ? menuAnchor.width : 192;
+        const left = wide ? menuAnchor.left : Math.max(8, menuAnchor.right - width);
+        return createPortal(
+          <div
+            data-movie-menu
+            role="menu"
+            className="fixed z-[1000] rounded-lg border border-border bg-card p-1 shadow-lg"
+            style={{
+              left,
+              width,
+              ...(openUp
+                ? { bottom: window.innerHeight - menuAnchor.top + 4 }
+                : { top: menuAnchor.bottom + 4 }),
+            }}
+          >
+            {id !== featuredMovieId && (
+              <button
+                role="menuitem"
+                onClick={() => handleSetFeatured(id)}
+                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gold hover:bg-muted"
+              >
+                Set as Featured <Star className="h-4 w-4" />
+              </button>
+            )}
+            <button
+              role="menuitem"
+              onClick={() => {
+                setEditingMovie(movies.find((m) => m.id === id) ?? null);
+                setMenuId(null);
+              }}
+              className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
+            >
+              Edit Movie <Pencil className="h-4 w-4" />
+            </button>
+            <button
+              role="menuitem"
+              onClick={() => handleDelete(id)}
+              className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-destructive hover:bg-muted"
+            >
+              Delete Movie <Trash2 className="h-4 w-4" />
+            </button>
+          </div>,
+          document.body,
+        );
+      })()}
     </>
   );
 }
