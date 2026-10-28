@@ -16,6 +16,7 @@ import { Route as LayoutBroadcastRouteImport } from './routes/_layout.broadcast'
 import { Route as LayoutCategoriesRouteImport } from './routes/_layout.categories'
 import { Route as LayoutDashboardRouteImport } from './routes/_layout.dashboard'
 import { Route as LayoutMoviesRouteImport } from './routes/_layout.movies'
+import { Route as LayoutReviewsRouteImport } from './routes/_layout.reviews'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout.settings'
 import { Route as LayoutSubscribersRouteImport } from './routes/_layout.subscribers'
 import { Route as LayoutUploadMovieRouteImport } from './routes/_layout.upload-movie'
@@ -55,6 +56,11 @@ const LayoutMoviesRoute = LayoutMoviesRouteImport.update({
   path: '/movies',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutReviewsRoute = LayoutReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/categories': typeof LayoutCategoriesRoute
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
+  '/reviews': typeof LayoutReviewsRoute
   '/settings': typeof LayoutSettingsRoute
   '/subscribers': typeof LayoutSubscribersRoute
   '/upload-movie': typeof LayoutUploadMovieRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/categories': typeof LayoutCategoriesRoute
   '/dashboard': typeof LayoutDashboardRoute
   '/movies': typeof LayoutMoviesRoute
+  '/reviews': typeof LayoutReviewsRoute
   '/settings': typeof LayoutSettingsRoute
   '/subscribers': typeof LayoutSubscribersRoute
   '/upload-movie': typeof LayoutUploadMovieRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/_layout/categories': typeof LayoutCategoriesRoute
   '/_layout/dashboard': typeof LayoutDashboardRoute
   '/_layout/movies': typeof LayoutMoviesRoute
+  '/_layout/reviews': typeof LayoutReviewsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/subscribers': typeof LayoutSubscribersRoute
   '/_layout/upload-movie': typeof LayoutUploadMovieRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/dashboard'
     | '/movies'
+    | '/reviews'
     | '/settings'
     | '/subscribers'
     | '/upload-movie'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/dashboard'
     | '/movies'
+    | '/reviews'
     | '/settings'
     | '/subscribers'
     | '/upload-movie'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/_layout/categories'
     | '/_layout/dashboard'
     | '/_layout/movies'
+    | '/_layout/reviews'
     | '/_layout/settings'
     | '/_layout/subscribers'
     | '/_layout/upload-movie'
@@ -211,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutMoviesRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/reviews': {
+      id: '/_layout/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof LayoutReviewsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/settings': {
       id: '/_layout/settings'
       path: '/settings'
@@ -247,6 +266,7 @@ interface LayoutRouteChildren {
   LayoutCategoriesRoute: typeof LayoutCategoriesRoute
   LayoutDashboardRoute: typeof LayoutDashboardRoute
   LayoutMoviesRoute: typeof LayoutMoviesRoute
+  LayoutReviewsRoute: typeof LayoutReviewsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutSubscribersRoute: typeof LayoutSubscribersRoute
   LayoutUploadMovieRoute: typeof LayoutUploadMovieRoute
@@ -258,6 +278,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutCategoriesRoute: LayoutCategoriesRoute,
   LayoutDashboardRoute: LayoutDashboardRoute,
   LayoutMoviesRoute: LayoutMoviesRoute,
+  LayoutReviewsRoute: LayoutReviewsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutSubscribersRoute: LayoutSubscribersRoute,
   LayoutUploadMovieRoute: LayoutUploadMovieRoute,
