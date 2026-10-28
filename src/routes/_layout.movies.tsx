@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus, ShoppingCart } from "lucide-react";
+import { ImageIcon, MoreHorizontal, Trash2, ArrowRight, Pencil, Star, Plus, ShoppingCart, MessageSquare } from "lucide-react";
 import { AddMovieModal, type Movie } from "@/components/admin/AddMovieModal";
 import { SuccessModal } from "@/components/admin/SuccessModal";
 import { API_BASE, getAccessToken } from "@/lib/auth";
@@ -16,6 +16,7 @@ function formatDate(iso: string): string {
 }
 
 function MoviesPage() {
+  const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
@@ -319,6 +320,16 @@ function MoviesPage() {
               className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
             >
               Edit Movie <Pencil className="h-4 w-4" />
+            </button>
+            <button
+              role="menuitem"
+              onClick={() => {
+                setMenuId(null);
+                navigate({ to: "/reviews", search: { movie: id } });
+              }}
+              className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-muted"
+            >
+              View Reviews <MessageSquare className="h-4 w-4" />
             </button>
             <button
               role="menuitem"

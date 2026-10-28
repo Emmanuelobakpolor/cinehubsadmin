@@ -34,6 +34,11 @@ interface TopMovie {
   avg_rating: number | null;
 }
 
+function okJson(r: Response) {
+  if (!r.ok) throw new Error(`Request failed (${r.status})`);
+  return r.json();
+}
+
 function formatCount(n: number) {
   return n.toLocaleString();
 }
@@ -57,6 +62,8 @@ function Dashboard() {
   });
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [statsError, setStatsError] = useState(false);
+  const statsPending = loadingStats || statsError;
   const [loadingMovies, setLoadingMovies] = useState(true);
 
   const fetchPlans = () => {
@@ -72,14 +79,14 @@ function Dashboard() {
     const headers = { Authorization: `Bearer ${getAccessToken()}` };
 
     Promise.all([
-      fetch(`${API_BASE}/users/dashboard-stats/`, { headers }).then((r) => r.json()),
-      fetch(`${API_BASE}/movies/stats/`, { headers }).then((r) => r.json()),
+      fetch(`${API_BASE}/users/dashboard-stats/`, { headers }).then(okJson),
+      fetch(`${API_BASE}/movies/stats/`, { headers }).then(okJson),
     ])
       .then(([u, m]) => {
         setUserStats((prev) => ({ ...prev, ...u }));
         setMovieStats({ total_movies: m.total_movies ?? 0, top_movies: m.top_movies ?? [] });
       })
-      .catch(() => {})
+      .catch(() => setStatsError(true))
       .finally(() => setLoadingStats(false));
 
     fetch(`${API_BASE}/movies/?page_size=6`, { headers })
@@ -92,10 +99,10 @@ function Dashboard() {
   }, []);
 
   const stats = [
-    { label: "Total Users", value: loadingStats ? "—" : String(userStats.total_users), icon: Users, color: "bg-gold text-white", link: "/users" },
-    { label: "Basic Subs", value: loadingStats ? "—" : String(userStats.basic_subs), icon: Star, color: "bg-emerald-500 text-white", link: "/subscribers" },
-    { label: "Premium Subs", value: loadingStats ? "—" : String(userStats.premium_subs), icon: Star, color: "bg-sky-500 text-white", link: "/subscribers" },
-    { label: "Total Movies", value: loadingStats ? "—" : String(movieStats.total_movies), icon: Film, color: "bg-amber-300 text-white", withMonth: true, link: "/movies" },
+    { label: "Total Users", value: statsPending ? "—" : String(userStats.total_users), icon: Users, color: "bg-gold text-white", link: "/users" },
+    { label: "Basic Subs", value: statsPending ? "—" : String(userStats.basic_subs), icon: Star, color: "bg-emerald-500 text-white", link: "/subscribers" },
+    { label: "Premium Subs", value: statsPending ? "—" : String(userStats.premium_subs), icon: Star, color: "bg-sky-500 text-white", link: "/subscribers" },
+    { label: "Total Movies", value: statsPending ? "—" : String(movieStats.total_movies), icon: Film, color: "bg-amber-300 text-white", withMonth: true, link: "/movies" },
   ];
 
   const activity = [
@@ -107,6 +114,12 @@ function Dashboard() {
 
   return (
     <>
+      {statsError && (
+        <div className="mb-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          Couldn't load dashboard stats. Refresh the page, or log in again if this keeps happening.
+        </div>
+      )}
+
       {/* Stats Grid — 2 columns from 360px, 4 columns on lg+ */}
       <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {stats.map((s) => (
@@ -154,7 +167,7 @@ function Dashboard() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[11px] text-muted-foreground sm:text-xs lg:text-sm">{s.label}</div>
-                <div className="mt-0.5 text-lg font-bold tracking-tight sm:text-xl lg:text-2xl">{loadingStats ? "—" : s.value}</div>
+                <div className="mt-0.5 text-lg font-bold tracking-tight sm:text-xl lg:text-2xl">{statsPending ? "—" : s.value}</div>
               </div>
             </div>
             <div className="mt-3 truncate text-[11px] text-muted-foreground sm:mt-4 sm:text-xs">{s.hint}</div>

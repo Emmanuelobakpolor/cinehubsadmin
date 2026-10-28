@@ -5,6 +5,10 @@ import { API_BASE, getAccessToken } from "@/lib/auth";
 import { SuccessModal } from "@/components/admin/SuccessModal";
 
 export const Route = createFileRoute("/_layout/reviews")({
+  validateSearch: (search: Record<string, unknown>): { movie?: number } => {
+    const movie = Number(search.movie);
+    return Number.isInteger(movie) && movie > 0 ? { movie } : {};
+  },
   component: ReviewsPage,
 });
 
@@ -68,7 +72,11 @@ function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [nextUrl, setNextUrl] = useState<string | null>(null);
   const [movies, setMovies] = useState<MovieOption[]>([]);
-  const [movieFilter, setMovieFilter] = useState("");
+  const { movie: movieParam } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const movieFilter = movieParam ? String(movieParam) : "";
+  const setMovieFilter = (value: string) =>
+    navigate({ search: value ? { movie: Number(value) } : {}, replace: true });
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modal, setModal] = useState<{ mode: "add" } | { mode: "edit"; review: Review } | null>(null);
